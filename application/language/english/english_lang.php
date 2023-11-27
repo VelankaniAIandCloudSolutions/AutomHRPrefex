@@ -3882,3 +3882,9 @@ $lang['payment_attempt_amount']                             = 'Invoice Total';
 $lang['payment_attempt_fee']                                = 'Payment Fee';
 $lang['feature']                                            = 'Feature';
 $lang['capabilities']                                       = 'Capabilities';
+
+$lang['reporting_to']                                       = 'Reporting To';
+$lang['send_to_reporting_manager']                          = 'Send for Approval to Reporting Manager';
+$lang['approval']                                           = 'Approval';
+$lang['activity_not_recorded']                              = 'Selected time range activity not recorded';
+$lang['timesheet_send_to_reporting_manager']                = 'Time sheet sent for reporting manager';

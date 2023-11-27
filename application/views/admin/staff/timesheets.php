@@ -79,7 +79,27 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-5ths">
+                            <?php if(!isset($view_all)) { ?>
+                                <div class="col-md-5ths">
+                                    <div class="select-placeholder">
+                                        <select name="reporting_manager_id" id="reporting_manager_id" class="selectpicker" data-width="100%">
+                                            <?php foreach ($reproting_to as $reproting_to_manager) {
+                                                ?>
+                                            <option value="<?php echo $reproting_to_manager['reporting_to_id']; ?>">
+                                                <?php echo get_staff_full_name($reproting_to_manager['reporting_to_id']); ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5ths" style="min-width:10%  !important; max-width:10%  !important;">
+                                    <a href="#" id="submit_for_approval"
+                                        class="btn btn-primary pull-left" title="<?php echo _l('send_to_reporting_manager'); ?>"><?php echo _l('approval'); ?></a>
+                                </div>
+
+                            <?php } ?>
+                            
+                            <div class="col-md-5ths" style="min-width:10%  !important; max-width:10%  !important;">
                                 <a href="#" id="apply_filters_timesheets"
                                     class="btn btn-primary pull-left"><?php echo _l('apply'); ?></a>
                             </div>
@@ -311,7 +331,29 @@ function do_timesheets_title() {
     $('head title').html(_temp + (staff_member_select.find('option:selected').text() != '' ? ' - ' + staff_member_select
         .find('option:selected').text() : ''));
 }
+
+// Timesheet send for approval manager 
+$("#submit_for_approval").on("click", function(){
+    var range = $("#range").val();
+    var period_from = $("#period-from").val();
+    var period_to = $("#period-to").val();
+    var project_id = $("#project_id").val();
+    var clientid = $("#clientid").val();
+    var reporting_manager_id = $("#reporting_manager_id").val();
+
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('admin/staff/time_sheet_approval');?>", // Replace with your actual backend endpoint
+        data: {range:range, period_from:period_from, period_to:period_to, project_id:project_id, clientid:clientid, reporting_manager_id:reporting_manager_id},
+        success: function(response) {
+            console.log(response);
+            // location.reload();
+        }
+    });
+
+});
 </script>
+
 </body>
 
 </html>
