@@ -1,12 +1,12 @@
-# # Ignore database file
-# application/config/app-config.php
-# application/config/database.php
-# application/config/config.php
-# application/config/constants.php
+# Ignore database file
+application/config/app-config.php
+application/config/database.php
+application/config/config.php
+application/config/constants.php
 
-# # Ignore file
-# *.htaccess
+# Ignore file
+*.htaccess
 
 
-# # Ignore directory
-# --install
+# Ignore directory
+--install
