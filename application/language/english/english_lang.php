@@ -3888,3 +3888,6 @@ $lang['send_to_reporting_manager']                          = 'Send for Approval
 $lang['approval']                                           = 'Approval';
 $lang['activity_not_recorded']                              = 'Selected time range activity not recorded';
 $lang['timesheet_send_to_reporting_manager']                = 'Time sheet sent for reporting manager';
+$lang['timesheet_activity_exist']                           = 'Selected timesheet period already exist';
+$lang['client_not_selected']                                = 'Please select Correct Client.';
+$lang['project_not_selected']                               = 'Please select Correct Projects.';

@@ -26,14 +26,14 @@
                                 <div class="select-placeholder">
                                     <select name="range" id="range" class="selectpicker" data-width="100%">
                                         <option value="today" selected><?php echo _l('today'); ?></option>
-                                        <option value="this_month">
+                                        <!-- <option value="this_month">
                                             <?php echo _l('staff_stats_this_month_total_logged_time'); ?></option>
                                         <option value="last_month">
                                             <?php echo _l('staff_stats_last_month_total_logged_time'); ?></option>
                                         <option value="this_week">
                                             <?php echo _l('staff_stats_this_week_total_logged_time'); ?></option>
                                         <option value="last_week">
-                                            <?php echo _l('staff_stats_last_week_total_logged_time'); ?></option>
+                                            <?php echo _l('staff_stats_last_week_total_logged_time'); ?></option> -->
                                         <option value="period"><?php echo _l('period_datepicker'); ?></option>
                                     </select>
                                 </div>
@@ -347,7 +347,7 @@ $("#submit_for_approval").on("click", function(){
         data: {range:range, period_from:period_from, period_to:period_to, project_id:project_id, clientid:clientid, reporting_manager_id:reporting_manager_id},
         success: function(response) {
             console.log(response);
-            // location.reload();
+            location.reload();
         }
     });
 

@@ -461,33 +461,87 @@ class Staff extends AdminController
         }
         $id = get_staff_user_id();
         $logged_time = $this->staff_model->get_logged_time_data($id, $ts_filter_data);
-        
-        if(!empty($logged_time['timesheets']) && sizeof($logged_time['timesheets']) > 0 )
+        if($this->input->post('range') === 'today')
         {
-            $approval_data = array();
-            $approval_data = array(
-                "staff_id"              =>  $id,
-                "reporting_manager_id"  =>  $this->input->post('reporting_manager_id'),
-                "time_range"            =>  $this->input->post('range'),
-                "from_date"             =>  $this->input->post('period_from'),
-                "to_date"               =>  $this->input->post('period_to'),
-                "customer_ids"          =>  $this->input->post('clientid'),
-                "project_ids"           =>  $this->input->post('project_id'),
-                "status"                =>  '0'
-            );
-
-            $this->db->select("id");
-            $this->db->from('tbltime_sheet_approval');
-            $this->db->where($approval_data);
-            $time_sheet_exist = $this->db->get();
-            echo $this->db->last_query();die;
-
-
-            set_alert('success', _l('timesheet_send_to_reporting_manager'));
+            $period_from = date("Y-m-d");
+            $period_to = date("Y-m-d");
         }
         else{
-            echo __LINE__; die;
-            set_alert('danger', _l('activity_not_recorded'));
+            $period_from    = $this->input->post('period_from');
+            $period_to      = $this->input->post('period_to');
+        }
+
+        if(!empty($logged_time['timesheets']) && sizeof($logged_time['timesheets']) > 0 )
+        {
+            $this->db->select("id");
+            $this->db->from('tbltime_sheet_approval');
+            if($this->input->post('reporting_manager_id') != "")
+            {
+                $manager_ids = $this->input->post('reporting_manager_id');
+                $this->db->where_in("reporting_manager_id", $manager_ids);
+            }
+
+            if($id != "")
+            {
+                $this->db->where_in("staff_id", $id);
+            }
+
+            if($this->input->post('range') != "")
+            {
+                $time_range = $this->input->post('range');
+                $this->db->where_in("time_range", $time_range);
+            }
+
+            if($period_from != "" && $period_from != "0000-00-00")
+            {
+                $this->db->where("from_date >=", $period_from);
+                $this->db->where("to_date <=", $period_to);
+            }
+            if($this->input->post('clientid') != "")
+            {
+                $clientid = $this->input->post('clientid');
+                $this->db->where_in("customer_ids", $clientid);
+            }
+            // else{
+            //     set_alert('danger', _l('client_not_selected')); die;
+            // }
+            if($this->input->post('project_id') != "")
+            {
+                $project_ids = $this->input->post('project_id');
+                $this->db->where_in("project_ids", $project_ids);
+            }
+            else{
+                set_alert('danger', _l('project_not_selected')); die;
+            }
+            
+            $this->db->where("status != '2'");
+
+            $time_sheet_exist = $this->db->get();
+            $time_sheet_exist_results = $time_sheet_exist->result_array();
+            if(!empty($time_sheet_exist_results))
+            {
+                set_alert('danger', _l('timesheet_activity_exist')); die;
+            }
+            else{
+                $times_sheet_json_array[] = $logged_time['timesheets'];
+                $approval_data = array();
+                $approval_data = array(
+                    "staff_id"              =>  $id,
+                    "reporting_manager_id"  =>  $this->input->post('reporting_manager_id'),
+                    "time_range"            =>  $this->input->post('range'),
+                    "from_date"             =>  $period_from,
+                    "to_date"               =>  $period_to,
+                    "customer_ids"          =>  $this->input->post('clientid'),
+                    "project_ids"           =>  implode(",",$this->input->post('project_id')),
+                    "status"                =>  '0',
+                    "logged_time_sheet"     =>  json_encode($times_sheet_json_array)
+                );
+                $this->db->insert("tbltime_sheet_approval",$approval_data);
+                set_alert('success', _l('timesheet_send_to_reporting_manager')); die;
+            }
+        }
+        else{
+            set_alert('danger', _l('activity_not_recorded')); die;
         }
     }
 }
