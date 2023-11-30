@@ -1369,4 +1369,68 @@ class Reports extends AdminController
     {
         return $this->db->query('SELECT DISTINCT taxname,taxrate FROM ' . db_prefix() . "item_tax WHERE rel_type='" . $rel_type . "' ORDER BY taxname ASC")->result_array();
     }
+
+    public function timesheet_approval_list()
+    { 
+        $data['stafflist'] = $this->db->query('SELECT staffid FROM tblstaff')->result_array();
+        $this->load->view('admin/reports/timesheets_approval_list', $data);
+    }
+
+    public function timesheet_approval_list_data()
+    {   
+        $ts_filter_data = array();
+        $start_date = $this->input->post('period_from');
+        $end_date = $this->input->post('period_to');
+        $status = $this->input->post("status");
+        $clientid = $this->input->post("clientid");
+        $project_id = $this->input->post("project_id");
+        $staffId = $this->input->post("timesheet_staff_id");
+
+         if(!empty($start_date) && $start_date != '')
+        {
+            $ts_filter_data['tsa.from_date'] = $start_date;
+        }
+        
+        if(!empty($end_date) && $end_date != '')
+        {
+            $ts_filter_data['tsa.to_date'] = $end_date;
+        }
+        if($staffId != "")
+        {
+            $ts_filter_data['tsa.staff_id'] = $staffId; 
+        }
+        if($status != "")
+        {
+            $ts_filter_data['tsa.status'] = $status; 
+        }
+        if($clientid != "")
+        {
+            $ts_filter_data['tsa.customer_ids'] = $clientid; 
+        }
+        if($project_id != "")
+        {
+            $ts_filter_data['tsa.project_ids'] = $project_id; 
+        } 
+
+        $this->db->select("tsa.*");
+        $this->db->from(db_prefix().'time_sheet_approval as tsa');
+        $this->db->join(db_prefix()."staff as staff","staff.staffid = tsa.staff_id","left");
+        $this->db->join(db_prefix()."staff as rm","rm.staffid = tsa.reporting_manager_id","left");
+        $this->db->join(db_prefix()."clients as c","c.userid = tsa.customer_ids","left");
+        $this->db->join(db_prefix()."projects as p","FIND_IN_SET(tsa.project_ids, p.id) > 0","left");
+        if(!empty($ts_filter_data))
+        {
+            $this->db->where($ts_filter_data);
+        }
+        $query = $this->db->get();
+        $result = $query->result_array();
+    
+        if(!empty($result))
+        {
+            foreach($result as $value)
+            {
+                print_r($value); die;  
+            }
+        }
+    }
 }

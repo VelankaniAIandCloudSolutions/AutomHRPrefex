@@ -107,8 +107,8 @@ function get_available_staff_permissions($data = [])
             'capabilities' => [
                 'view'            => $viewGlobalName,
                 'view-timesheets' => _l('permission_view_timesheet_report'),
-                'timesheet-approval-list'=> _l("timesheet_approval_list"),
-                'timesheet-approval-approve-reject'=> _l("timesheet_approval_reject"),
+                'timesheet_approval_list'=> _l("timesheet_approval_list"),
+                'timesheet_approval_reject'=> _l("timesheet_approval_reject"),
             ],
         ],
         'roles' => [
