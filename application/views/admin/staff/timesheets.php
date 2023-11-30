@@ -487,7 +487,6 @@ function timesheet_tracking_status(start_date, period_to)
         data:{frequency:frequency,timesheet_staff_id:timesheet_staff_id,start_date:start_date,period_to:period_to, project_id:project_id,clientid:clientid, reporting_manager_id:reporting_manager_id},
         success: function(response) {
             var obj = JSON.parse(response);
-            
             if(obj.status == 0)
             {
                 $('#timesheet_status')
@@ -509,6 +508,13 @@ function timesheet_tracking_status(start_date, period_to)
                 .addClass('bg-primary spanTextButton') // Add the new class
                 .text('Timesheet Not Submitted for Approval')
             }
+            else if(obj.status == 4)
+            {
+                $('#timesheet_status')
+                .removeClass() // Remove existing classes
+                .addClass('bg-warning spanTextButton') // Add the new class
+                .text('Timesheet Records Not Available.')
+            }
             else{
                 $('#timesheet_status')
                 .removeClass() // Remove existing classes
@@ -520,8 +526,6 @@ function timesheet_tracking_status(start_date, period_to)
 }
 
 </script>
-
-
 
 </body>
 

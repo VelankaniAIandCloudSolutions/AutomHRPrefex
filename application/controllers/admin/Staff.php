@@ -713,7 +713,6 @@ class Staff extends AdminController
             $period_from    = $this->input->post('period_from');
             $period_to      = $this->input->post('period_to');
         }
-        
         if(!empty($logged_time['timesheets']) && sizeof($logged_time['timesheets']) > 0 )
         {
             $this->db->select("id,status");
@@ -806,9 +805,8 @@ class Staff extends AdminController
         }
         else
         {
-            $data['status'] = "3";  // Not submitted
+            $data['status'] = "4";  // time tacking records not avaialble.
         }
-
         echo json_encode($data); die;
     }
 }
