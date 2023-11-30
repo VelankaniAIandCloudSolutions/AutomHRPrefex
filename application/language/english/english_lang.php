@@ -3901,3 +3901,5 @@ $lang['timesheet_to_date']                                  = 'To Date';
 $lang['total_pending_timesheet']                            = 'Pending for Approvals Timesheets';
 $lang['total_approved_timesheet']                           = 'Approved Time Sheets';
 $lang['reporting_manager_not_selected']                     = 'Please select Reporting Manager';
+$lang['timesheet_approval_list']                            = 'Timesheet Approval List';
+$lang['timesheet_approval_reject']                          =  'Timesheet Approve/Reject';
