@@ -1589,7 +1589,7 @@ class Reports extends AdminController
         if($id > 0)
         {
             $this->db->where("id", $id);
-            $this->db->update("tbltime_sheet_approval", array("status" => '0'));
+            $this->db->update("tbltime_sheet_approval", array("status" => '2'));
             set_alert('success', _l('updated_successfully'));
             redirect(base_url("admin/reports/timesheet_approval_list"));
         }
