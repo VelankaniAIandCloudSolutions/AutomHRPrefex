@@ -69,8 +69,8 @@
                         </div>
                         <div class="col-md-3">
                         <label><?php echo _l('project');?></label>
-                            <select data-empty-title="<?php echo _l('project'); ?>" multiple="true"
-                                name="timesheet_project_id[]" id="project_id" class="projects ajax-search"
+                            <select data-empty-title="<?php echo _l('project'); ?>" multiple="false"
+                                name="timesheet_project_id" id="project_id" class="projects ajax-search"
                                 data-live-search="true" data-width="100%">
                             </select>
                         </div>
@@ -493,6 +493,8 @@ function timesheet_tracking_status(start_date, period_to)
                 .removeClass() // Remove existing classes
                 .addClass('bg-warning spanTextButton') // Add the new class
                 .text('Timesheet Pending for Approval'); // Set the new text 
+
+                $("#submit_for_approval").hide();
             }
             else if(obj.status == 1)
             {
@@ -500,20 +502,22 @@ function timesheet_tracking_status(start_date, period_to)
                 .removeClass() // Remove existing classes
                 .addClass('bg-success spanTextButton') // Add the new class
                 .text('Timesheet Approved by Manager'); // Set the new text 
+                $("#submit_for_approval").hide();
             }
             else if(obj.status == 3)
             {
                 $('#timesheet_status')
                 .removeClass() // Remove existing classes
                 .addClass('bg-primary spanTextButton') // Add the new class
-                .text('Timesheet Not Submitted for Approval')
+                .text('Timesheet Not Submitted for Approval');
+                $("#submit_for_approval").hide();
             }
             else if(obj.status == 4)
             {
                 $('#timesheet_status')
                 .removeClass() // Remove existing classes
                 .addClass('bg-warning spanTextButton') // Add the new class
-                .text('Timesheet Records Not Available.')
+                .text('Timesheet Records Not Available.');
             }
             else{
                 $('#timesheet_status')

@@ -1,10 +1,24 @@
+<style>
+    .spanTextButton
+        {
+            text-decoration: none;
+            padding: 2px 6px 2px 6px;
+            border-top: 1px solid #CCCCCC;
+            border-right: 1px solid #333333;
+            border-bottom: 1px solid #333333;
+            border-left: 1px solid #CCCCCC;
+            border-radius: 8px;
+        }
+</style>
+
+
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <?php init_head(); ?>
 <div id="wrapper">
     <div class="content">
         <div class="row">
             <div class='col-md-12'>
-                <div class="panel_s">
+                <!-- <div class="panel_s">
                     <div class="panel-body">
                         <div class="col-md-3">
                         <label><?php echo _l('filter');?></label>
@@ -54,13 +68,42 @@
                             </select>
                         </div>
                         
-                        
-
                         <div class="col-md-3" style='margin-top:20px;'>
                             <a href="#" id="filter"
                                 class="btn btn-primary pull-left" title="<?php echo _l('filter'); ?>"><?php echo _l('filter'); ?></a>
                         </div>
 
+                    </div>
+                </div> -->
+                
+                <div class="row">
+                    <div class='col-md-12'>
+                        <div class="panel_s">
+                            <div class="panel-body">
+                                <div class="clearfix"></div>
+                                    <div class="panel-table-full">
+                                    <?php
+                                        $table_data = array(
+                                        _l('sno'),
+                                        _l('staff'),
+                                        _l('reporting_to'),
+                                        _l('project'),
+                                        _l('client'),
+                                        _l('timesheet_status'),
+                                        _l('action'),                            
+                                        );
+                                        render_datatable($table_data,'table_timesheet_approval',
+                                        // array('customizable-table'),
+                                        array(
+                                        'id'=>'table-table_timesheet_approval',
+                                        'data-last-order-identifier'=>'table_timesheet_approval',
+                                        'data-default-order'=>get_table_last_order('table_timesheet_approval'),
+                                        )); 
+                                    ?>
+
+                                    </div>
+                                </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -68,6 +111,8 @@
         
         <!-- end - Time sheet approval  -->
     </div>
+
+    
 </div>
 <?php init_tail(); ?>
 <script>
@@ -95,25 +140,14 @@ $(function() {
     });
 });
 
-// Timesheet send for approval manager 
+//  data table
 
-$("#filter").on("click", function(){
+$(function(){
+    var ContractsServerParams = '';
     var status = $("#status").val();
-    var period_from = $("#startdate").val();
-    var period_to = $("#enddate").val();
-    var clientid = $("#clientid").val();
-    var project_id = $("#project_id").val();
-    var timesheet_staff_id = $("#timesheet_staff_id").val();
-   
-    $.ajax({
-        type: "POST",
-        url: "<?php echo base_url('admin/reports/timesheet_approval_list_data');?>",
-        data: {status:status,timesheet_staff_id:timesheet_staff_id,period_from:period_from, period_to:period_to, project_id:project_id, clientid:clientid},
-        success: function(response) {
-             console.log(response);
-        }
-    });
-
+    ContractsServerParams = {status:"1"};
+    var table_contract = $('.table-table_timesheet_approval');
+    initDataTable(table_contract, admin_url+'reports/timesheet_approval_list_data', [0], [0], ContractsServerParams, [1, 'desc']);
 });
 
 </script>

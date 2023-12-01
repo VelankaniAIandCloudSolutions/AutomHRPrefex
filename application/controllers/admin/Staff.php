@@ -575,7 +575,8 @@ class Staff extends AdminController
                     "from_date"             =>  $period_from,
                     "to_date"               =>  $period_to,
                     "customer_ids"          =>  $this->input->post('clientid'),
-                    "project_ids"           =>  implode(",",$this->input->post('project_id')),
+                    // "project_ids"           =>  implode(",",$this->input->post('project_id')),
+                    "project_ids"           =>  $this->input->post('project_id'),
                     "status"                =>  '0',
                     "logged_time_sheet"     =>  json_encode($times_sheet_json_array)
                 );
