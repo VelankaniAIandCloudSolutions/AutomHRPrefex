@@ -1567,8 +1567,12 @@ class Reports extends AdminController
             $output['iTotalRecords'] = count($trResult);
             $output['iTotalDisplayRecords'] = count($output['aaData']);
             $output['draw'] = $draw;
-            echo json_encode($output); die;
+            echo json_encode($output); ;
         }
+        else{
+            echo json_encode(array('data'=>''));
+        }
+        die;
     }
 
     public function timesheet_approve()
