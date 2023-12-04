@@ -514,6 +514,7 @@ class Staff extends AdminController
                 $clientid = $this->input->post('clientid');
                 $this->db->where_in("customer_ids", $clientid);
             }
+
             // else{
             //     set_alert('danger', _l('client_not_selected')); die;
             // }
@@ -523,7 +524,7 @@ class Staff extends AdminController
                 $this->db->where_in("project_ids", $project_ids);
             }
             else{
-                set_alert('danger', _l('project_not_selected')); die;
+                set_alert('danger', _l('project_not_selected'));
             }
 
             if($this->input->post('reporting_manager_id') != "")
@@ -532,14 +533,13 @@ class Staff extends AdminController
                 $this->db->where_in("reporting_manager_id", $reporting_manager_id);
             }
             else{
-                set_alert('danger', _l('reporting_manager_not_selected')); die;
+                set_alert('danger', _l('reporting_manager_not_selected'));
             }
             
             $this->db->where("status != '2'");
 
             $time_sheet_exist = $this->db->get();
             $time_sheet_exist_results = $time_sheet_exist->result_array();
-            
             if(!empty($time_sheet_exist_results))
             {
                 $pending_counts = 0;
@@ -556,13 +556,11 @@ class Staff extends AdminController
                 } 
                 if($pending_counts > 0)
                 {
-                    set_alert('warning', _l('total_pending_timesheet').' : '. $pending_counts." and "._l('total_approved_timesheet').' : '. $approved_counts); die;
+                    set_alert('warning', _l('total_pending_timesheet').' : '. $pending_counts." and "._l('total_approved_timesheet').' : '. $approved_counts);
                 }
                 elseif($pending_counts == 0)
                 {
-                    set_alert('warning',_l('timesheet_activity_exist')); die;
-                }
-                else{
+                    set_alert('warning',_l('timesheet_activity_exist'));
                 }
             }
             else{
@@ -575,8 +573,7 @@ class Staff extends AdminController
                     "from_date"             =>  $period_from,
                     "to_date"               =>  $period_to,
                     "customer_ids"          =>  $this->input->post('clientid'),
-                    // "project_ids"           =>  implode(",",$this->input->post('project_id')),
-                    "project_ids"           =>  $this->input->post('project_id'),
+                    "project_ids"           =>  implode(",",$this->input->post('project_id')),
                     "status"                =>  '0',
                     "logged_time_sheet"     =>  json_encode($times_sheet_json_array)
                 );
@@ -694,7 +691,6 @@ class Staff extends AdminController
         $ts_filter_data = [];
         $ts_filter_data['period-from'] = $this->input->post('start_date');
         $ts_filter_data['period-to']   = $this->input->post('period_to');
-
         if($this->input->post("timesheet_staff_id") != "")
         {
             $id = $this->input->post("timesheet_staff_id");
@@ -718,6 +714,7 @@ class Staff extends AdminController
         {
             $this->db->select("id,status");
             $this->db->from('tbltime_sheet_approval');
+
             if($this->input->post('reporting_manager_id') != "")
             {
                 $manager_ids = $this->input->post('reporting_manager_id');
@@ -740,21 +737,23 @@ class Staff extends AdminController
                 $this->db->where("from_date >=", $period_from);
                 $this->db->where("to_date <=", $period_to);
             }
+
             if($this->input->post('clientid') != "")
             {
                 $clientid = $this->input->post('clientid');
                 $this->db->where_in("customer_ids", $clientid);
             }
             // else{
-            //     set_alert('danger', _l('client_not_selected')); die;
+            //     set_alert('danger', _l('client_not_selected')); 
             // }
-            if($this->input->post('project_id') != "")
+            
+            if(isset($_POST['project_id']) && $_POST['project_id'] > 0 )
             {
                 $project_ids = $this->input->post('project_id');
                 $this->db->where_in("project_ids", $project_ids);
             }
             // else{
-            //     set_alert('danger', _l('project_not_selected')); die;
+            //     set_alert('danger', _l('project_not_selected'));
             // }
 
             if($this->input->post('reporting_manager_id') != "")
@@ -763,17 +762,17 @@ class Staff extends AdminController
                 $this->db->where_in("reporting_manager_id", $reporting_manager_id);
             }
             // else{
-            //     set_alert('danger', _l('reporting_manager_not_selected')); die;
+            //     set_alert('danger', _l('reporting_manager_not_selected'));
             // }
             
             $this->db->where("status != '2'");
+            // $this->db->group_by("staff_id,reporting_manager_id,time_range,project_ids");
             $this->db->order_by("id","desc");
-            $this->db->group_by("staff_id,reporting_manager_id,time_range,project_ids");
             $this->db->limit(1);
             $time_sheet_exist = $this->db->get();
-            
+
+
             $time_sheet_exist_results = $time_sheet_exist->result_array();
-            
             if(!empty($time_sheet_exist_results))
             {
                 $pending_counts = 0;

@@ -479,7 +479,13 @@ function timesheet_tracking_status(start_date, period_to)
     var timesheet_staff_id = $("#timesheet_staff_id").val();
     var clientid = $("#clientid").val();
     var reporting_manager_id = $("#reporting_manager_id").val();
-    var project_id = $('select[name="timesheet_project_id[]"]').val();
+    //var project_id = $('select[name="timesheet_project_id[]"]').val();
+    var project_id = $("#project_id").val();
+    
+    if(project_id == '')
+    {
+        project_id = 0;
+    }
 
     $.ajax({
         type: "POST",
