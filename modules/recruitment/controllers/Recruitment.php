@@ -2563,7 +2563,56 @@ class recruitment extends AdminController {
         $pdf->Output($dir, 'F');
     }
 
+	public function resume_parse()
+	{
+		$data['title'] = _l('resume_parse');
+        $this->load->view('recruitment/parse_resume_view', $data);
+	}
 
+	public function resume_submit()
+	{
+		if(isset($_FILES['import_resume']) && $_FILES['import_resume']['error'][0] === UPLOAD_ERR_OK) {
 
+			$apiUrl = PARSE_RESUME; // Replace with your actual API endpoint URL
+
+			$ch = curl_init();
+
+			curl_setopt($ch, CURLOPT_URL, $apiUrl);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+			$postData = array();
+			foreach ($_FILES['import_resume']['tmp_name'] as $index => $tmpName) {
+				$file = new CURLFile($tmpName, $_FILES['import_resume']['type'][$index], $_FILES['import_resume']['name'][$index]);
+				$postData["import_resume[$index]"] = $file;
+			}
+
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+
+			$response = curl_exec($ch);
+			if(curl_errno($ch)) 
+			{
+				$error = curl_error($ch);
+				//echo "cURL Error: $error";
+				set_alert("danger","cURL Error: ".$error);
+				redirect(admin_url("recruitment/resume_parse"));
+			}
+
+			// Close cURL
+			curl_close($ch);
+			$responseArray = json_decode($response, true);
+			$resumes = $responseArray['import_resume'];
+			$data['import_resume'] = array();
+			foreach ($resumes as $resume) {
+				$data['import_resume'][] = $resume;
+			}
+		}
+		else 
+		{
+			// Handle the file upload error
+			set_alert("danger",_l('parse_resume_file_error'));
+			redirect(admin_url("recruitment/resume_parse"));
+		}
+	}
 
 }

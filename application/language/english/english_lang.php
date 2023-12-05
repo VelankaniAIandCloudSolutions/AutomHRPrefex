@@ -3882,3 +3882,7 @@ $lang['payment_attempt_amount']                             = 'Invoice Total';
 $lang['payment_attempt_fee']                                = 'Payment Fee';
 $lang['feature']                                            = 'Feature';
 $lang['capabilities']                                       = 'Capabilities';
+
+$lang['resume_parse']                                       = 'Parse Resume';
+$lang['file_upload']                                        = 'Please update file extention doc, docx, pdf';
+$lang['parse_resume_file_error']                            = "Please upload correct file.";
