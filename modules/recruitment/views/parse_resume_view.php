@@ -32,7 +32,7 @@
 <script>
 $(function() {
     appValidateForm($('#import_form'), {
-        import_resume: {
+        'import_resume[]': {
             required: true,
             extension: "docx|rtf|doc|pdf"
         }
