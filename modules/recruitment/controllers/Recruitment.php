@@ -2574,7 +2574,6 @@ class recruitment extends AdminController {
 		if(isset($_FILES['import_resume']) && $_FILES['import_resume']['error'][0] === UPLOAD_ERR_OK) {
 
 			$apiUrl = PARSE_RESUME; // Replace with your actual API endpoint URL
-
 			$ch = curl_init();
 
 			curl_setopt($ch, CURLOPT_URL, $apiUrl);
@@ -2584,12 +2583,13 @@ class recruitment extends AdminController {
 			$postData = array();
 			foreach ($_FILES['import_resume']['tmp_name'] as $index => $tmpName) {
 				$file = new CURLFile($tmpName, $_FILES['import_resume']['type'][$index], $_FILES['import_resume']['name'][$index]);
-				$postData["import_resume[$index]"] = $file;
+				$postData["resumes[$index]"] = $file;
 			}
 
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
 
 			$response = curl_exec($ch);
+			
 			if(curl_errno($ch)) 
 			{
 				$error = curl_error($ch);
@@ -2601,11 +2601,9 @@ class recruitment extends AdminController {
 			// Close cURL
 			curl_close($ch);
 			$responseArray = json_decode($response, true);
-			$resumes = $responseArray['import_resume'];
-			$data['import_resume'] = array();
-			foreach ($resumes as $resume) {
-				$data['import_resume'][] = $resume;
-			}
+			
+			$resumes = $responseArray['resumes'];
+			$this->resume_list($resumes);
 		}
 		else 
 		{
@@ -2615,4 +2613,90 @@ class recruitment extends AdminController {
 		}
 	}
 
+	public function resume_list($resumes = array())
+	{
+		$data = array();
+		$data['import_resume'] = array();
+		foreach ($resumes as $resume) {
+			$data['import_resume'][] = $resume;
+		}
+		$data['campaign'] = $this->db->query("SELECT cp_id,campaign_code,campaign_name FROM ".db_prefix().'rec_campaign')->result_array();
+		$data['title'] = _l('resume_parse');
+		
+		$this->load->view('recruitment/resume_parse', $data);
+	}
+
+	public function save_parsed_resumes()
+	{
+		$response = array(
+			'status'	=> "0"
+		);
+
+		try{
+			$editedData = $_POST['editedData'];
+			$data = $editedData; // Assuming $editedData is already an array
+			foreach ($data as $item) {
+				
+				$name = $item['Name'];
+				$nameParts = explode(" ", $name);
+				$firstName = $nameParts[0];
+				$lastName = implode(" ", array_slice($nameParts, 1));
+				$email = $item['Email'];
+				$mobile = $item['Mobile'];
+				$skills = $item['Skills'];
+				$resume = $item['Resume'];
+				$candidate_code = $item[0]; // using for candidate code 
+				$candidate_data = array();
+				$candidate_data = array(
+					"candidate_code"	=> $candidate_code,
+					"candidate_name"	=> $firstName,
+					"last_name"			=> $lastName,
+					"email"				=> $email,
+					"phonenumber"		=> $mobile,
+					"skill"				=> $skills,
+					"date_add"			=> date("Y-m-d"),
+					"status"			=> '1',
+				);
+				$this->db->insert(db_prefix()."rec_candidate", $candidate_data);
+				
+				$last_insert_id = '';
+				$last_insert_id = $this->db->insert_id();
+				if($last_insert_id != "")
+				{
+					$file_data= array();
+					$file_result = $this->recruitment_model->upload_using_url($resume, $last_insert_id);
+					$file_name = basename($resume);
+					$file_ext = pathinfo($file_name, PATHINFO_EXTENSION);
+					$candidate_id = $last_insert_id;
+
+ 					$resume_insert = array();
+					$resume_insert = array(
+						"rel_id"	=> $candidate_id,
+						"rel_type"	=> 'rec_cadidate_file',
+						"file_name"	=> $file_name,
+						"filetype"	=> 'application/'.$file_ext,
+						"staffid"	=> $_SESSION['staff_user_id'],
+						"dateadded"	=> date("Y-m-d H:i:s"),
+					);
+					$this->db->insert("tblfiles", $resume_insert);
+					$resume_insert_id = $this->db->inserT_id();
+					if($resume_insert_id != "")
+					{
+						$message = _l('added_successfully', _l('candidate_profile'));
+						set_alert('success', $message);
+					}
+					$response = array(
+						'status'	=> "1"
+					);
+				}
+			}
+		}
+		catch (Exception $e) {
+		  $response = array(
+			'message' => 'Error occurred: ' . $e->getMessage(),
+			'status'	=> "0",
+		  );
+		}
+		echo json_encode($response);
+	}
 }

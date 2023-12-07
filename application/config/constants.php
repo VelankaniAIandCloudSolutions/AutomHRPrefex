@@ -204,4 +204,4 @@ define('LIBSPATH', APPPATH . 'libraries/');
 
 
 // Parse Resume API
-define('PARSE_RESUME', 'http://localhost:8000/api/v1/file_upload_view');
+define('PARSE_RESUME', 'https://parser.automhr.com/api/v1/file_upload_view');

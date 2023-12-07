@@ -3886,3 +3886,5 @@ $lang['capabilities']                                       = 'Capabilities';
 $lang['resume_parse']                                       = 'Parse Resume';
 $lang['file_upload']                                        = 'Please update file extention doc, docx, pdf';
 $lang['parse_resume_file_error']                            = "Please upload correct file.";
+$lang['no_data_found']                                      = "No data available.";
+$lang['resume_downlaod']                                    = "Resume Download";
