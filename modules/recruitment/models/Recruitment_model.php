@@ -3861,12 +3861,18 @@ class Recruitment_model extends App_Model {
 	function upload_using_url($file_url, $id) {
 		$upload_folder = RECRUITMENT_MODULE_UPLOAD_FOLDER . '/candidate/files/' . $id;
 		$file_name = basename($file_url);
-
-		// Check if the directory exists, create it if not
+		
+ 		// Check if the directory exists, create it if not
 		if (!file_exists($upload_folder)) {
-			mkdir($upload_folder, 0777, true);
-		}
 
+			$command = 'sudo chmod -R 0775 ' . escapeshellcmd(RECRUITMENT_MODULE_UPLOAD_FOLDER . '/candidate/files/');
+
+			// Execute the command
+			exec($command);
+
+			mkdir($upload_folder, 0775);
+		}
+		
 		// Download the file using cURL
 		$file_content = file_get_contents($file_url);
 		if ($file_content !== false) {
