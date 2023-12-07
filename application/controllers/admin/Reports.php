@@ -1369,4 +1369,233 @@ class Reports extends AdminController
     {
         return $this->db->query('SELECT DISTINCT taxname,taxrate FROM ' . db_prefix() . "item_tax WHERE rel_type='" . $rel_type . "' ORDER BY taxname ASC")->result_array();
     }
+
+    public function timesheet_approval_list()
+    { 
+        $data['stafflist'] = $this->db->query('SELECT staffid FROM tblstaff')->result_array();
+        $this->load->view('admin/reports/timesheets_approval_list', $data);
+    }
+
+    public function timesheet_approval_list_data()
+    {   
+        // $ts_filter_data = array();
+        // $start_date = $this->input->post('period_from');
+        // $end_date = $this->input->post('period_to');
+        // $status = $this->input->post("status");
+        // $clientid = $this->input->post("clientid");
+        // $project_id = $this->input->post("project_id");
+        // $staffId = $this->input->post("timesheet_staff_id");
+
+        //  if(!empty($start_date) && $start_date != '')
+        // {
+        //     $ts_filter_data['tsa.from_date'] = $start_date;
+        // }
+        
+        // if(!empty($end_date) && $end_date != '')
+        // {
+        //     $ts_filter_data['tsa.to_date'] = $end_date;
+        // }
+        // if($staffId != "")
+        // {
+        //     $ts_filter_data['tsa.staff_id'] = $staffId; 
+        // }
+        // if($status != "")
+        // {
+        //     $ts_filter_data['tsa.status'] = $status; 
+        // }
+        // if($clientid != "")
+        // {
+        //     $ts_filter_data['tsa.customer_ids'] = $clientid; 
+        // }
+        // if($project_id != "")
+        // {
+        //     $ts_filter_data['tsa.project_ids'] = $project_id; 
+        // } 
+        // echo"<pre>"; print_R($_POST); die;
+        $where = array();
+
+        $column_num  = $_POST['order'][0]['column'];
+        $order_column = $_POST['order'][0]['dir'];
+        $where = $order ='';
+        if($column_num =='0')
+        {
+            $where = 'tsa.id';
+            if($order_column =='asc')
+            {
+                $order = 'asc';
+            }
+            else{
+                $order = 'desc';
+            } 
+        }
+
+        if($column_num =='1' || $column_num =='2')
+        {
+            $where = 'staff.firstname';
+            if($order_column =='asc')
+            {
+                $order = 'asc';
+            }
+            else{
+                $order = 'desc';
+            } 
+        }
+        if($column_num =='3' )
+        {
+            $where = 'p.name';
+            if($order_column =='asc')
+            {
+                $order = 'asc';
+            }
+            else{
+                $order = 'desc';
+            } 
+        }
+        if($column_num =='4' )
+        {
+            $where = 'c.company';
+            if($order_column =='asc')
+            {
+                $order = 'asc';
+            }
+            else{
+                $order = 'desc';
+            } 
+        }
+
+        if($column_num =='5')
+        {
+            $where = 'tsa.status';
+            if($order_column =='asc')
+            {
+                $order = 'asc';
+            }
+            else{
+                $order = 'desc';
+            }  
+        }
+
+        $start = 0; 
+        $limit = 25;
+        $start = $_POST['start'];
+        $limit = $_POST['length'];
+        $draw = 1;
+        $draw = $_POST['draw'];
+
+        $search = '';
+        $search = $_POST['search']['value'];
+        
+
+        $this->db->select("tsa.id as id, 
+        staff.firstname as staff_name, 
+        IFNULL(rm.firstname, 'NA') AS reporting_manager_name,
+        IFNULL(p.name, 'NA') AS project_name,
+        IFNULL(c.company, 'NA') AS client_name,
+        tsa.status");
+        $this->db->from(db_prefix().'time_sheet_approval as tsa');
+        $this->db->join(db_prefix()."staff as staff","staff.staffid = tsa.staff_id","left");
+        $this->db->join(db_prefix()."staff as rm","rm.staffid = tsa.reporting_manager_id","left");
+        $this->db->join(db_prefix()."clients as c","c.userid = tsa.customer_ids","left");
+        $this->db->join(db_prefix()."projects as p","FIND_IN_SET(p.id, tsa.project_ids)","left");
+
+        if($search != "")
+        {
+            $this->db->group_start();
+            $this->db->like("staff.firstname",$search);
+            $this->db->or_like("staff.lastname",$search);
+            $this->db->or_like("p.name",$search);
+            $this->db->or_like("c.company",$search);
+            $this->db->group_end();
+        }
+
+        $this->db->order_by($where, $order);
+        $this->db->limit($limit, $start);
+        $query = $this->db->get();
+        $rResult = $query->result_array();
+
+        $this->db->select("tsa.id as id, 
+        staff.firstname as staff_name, 
+        IFNULL(rm.firstname, 'NA') AS reporting_manager_name,
+        IFNULL(p.name, 'NA') AS project_name,
+        IFNULL(c.company, 'NA') AS client_name,
+        tsa.status");
+        $this->db->from(db_prefix().'time_sheet_approval as tsa');
+        $this->db->join(db_prefix()."staff as staff","staff.staffid = tsa.staff_id","left");
+        $this->db->join(db_prefix()."staff as rm","rm.staffid = tsa.reporting_manager_id","left");
+        $this->db->join(db_prefix()."clients as c","c.userid = tsa.customer_ids","left");
+        $this->db->join(db_prefix()."projects as p","FIND_IN_SET(p.id, tsa.project_ids)","left");
+        $totalquery = $this->db->get();
+        $trResult = $totalquery->result_array();
+
+        if(!empty($rResult))
+        {
+            $i=0;
+            foreach ($rResult as $aRow) {
+                $i++;
+                $row = [];
+                $row[] = $i;
+                $row[] = $aRow['staff_name'];
+                $row[] = $aRow['reporting_manager_name'];
+                $row[] = $aRow['project_name'];
+                $row[] = $aRow['client_name'];
+                $status = '';
+                $action = '';
+                if($aRow['status'] == "0")
+                {
+                    $status .= '<span class="bg-warning spanTextButton">Pending</span>';
+                    $action .= '<a class="btn btn-success btn-xs" href="'.base_url('admin/reports/timesheet_approve/').$aRow['id'].'">'._l('approve').'</a>';
+                    $action .= '  ';
+                    $action .= '<a class="btn btn-danger btn-xs" href="'.base_url('admin/reports/timesheet_reject/').$aRow['id'].'">'._l('reject').'</a>';
+                }
+                elseif($aRow['status'] == "1")
+                {
+                    $status .= '<span class="bg-success spanTextButton">'._l('approved').'</span>';
+                }
+                elseif($aRow['status'] == "2")
+                {
+                    $status .= '<span class="bg-danger spanTextButton">'._l('rejected').'</span>';
+                }
+                $row[] = $status;
+                $row[] = $action;
+                
+                $row = hooks()->apply_filters('customers_table_row_data', $row, $aRow);
+                //"draw":1,"iTotalRecords":"1","iTotalDisplayRecords":"1",
+
+                $output['aaData'][] = $row;
+            }
+
+            $output['iTotalRecords'] = count($trResult);
+            $output['iTotalDisplayRecords'] = count($output['aaData']);
+            $output['draw'] = $draw;
+            echo json_encode($output); ;
+        }
+        else{
+            echo json_encode(array('data'=>''));
+        }
+        die;
+    }
+
+    public function timesheet_approve()
+    {
+        $id = $this->uri->segment(4);
+        if($id > 0)
+        {
+            $this->db->where("id", $id);
+            $this->db->update("tbltime_sheet_approval", array("status" => '1'));
+            set_alert('success', _l('updated_successfully'));
+            redirect(base_url("admin/reports/timesheet_approval_list"));
+        }
+    }
+
+    public function timesheet_reject()
+    {
+        $id = $this->uri->segment(4);
+        if($id > 0)
+        {
+            $this->db->where("id", $id);
+            $this->db->update("tbltime_sheet_approval", array("status" => '2'));
+            set_alert('success', _l('updated_successfully'));
+            redirect(base_url("admin/reports/timesheet_approval_list"));
+        }
+    }
 }

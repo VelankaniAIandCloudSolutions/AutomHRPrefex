@@ -198,7 +198,7 @@ foreach ($rResult as $aRow) {
 
     $company = '<a href="' . $url . '">' . $company . '</a>';
 
-    $company .= '<div class="row-options">';
+    $company .= '<div class="row-options as">';
     $company .= '<a href="' . admin_url('clients/client/' . $aRow['userid'] . ($isPerson && $aRow['contact_id'] ? '?group=contacts' : '')) . '">' . _l('view') . '</a>';
 
     if ($aRow['registration_confirmed'] == 0 && is_admin()) {
