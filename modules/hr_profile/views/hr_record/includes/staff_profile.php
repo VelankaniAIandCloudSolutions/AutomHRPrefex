@@ -33,7 +33,7 @@ if ($member->active == 0) {?>
 									<div class="userpic  brround mb-3">
 										<?php echo staff_profile_image($member->staffid, array('staff-profile-image-thumb'), 'thumb'); ?>
 									</div>
-									<h3 class="username mb-2"><?php echo html_entity_decode($member->firstname . ' ' . $member->lastname); ?></h3>
+									<h3 class="username mb-2"><?php echo html_entity_decode($member->firstname . ' ' .$member->middlename . ' ' . $member->lastname); ?></h3>
 									<div class="socials text-center mt-3">
 										<a href="facebook: <?php echo html_escape($member->facebook); ?>" class="btn btn-circle">
 											<i class="fa fa-facebook"></i>
@@ -111,7 +111,6 @@ foreach ($staff_departments as $staff_department) {
 
 		</div>
 		<div class="col-md-7">
-
 			<div class="col-md-12">
 				<h4 class="bold"><?php echo _l('hr_general_infor'); ?></h4>
 
@@ -123,7 +122,7 @@ foreach ($staff_departments as $staff_department) {
 						</tr>
 						<tr class="project-overview">
 							<td class="bold" width="30%"><?php echo _l('hr_hr_staff_name'); ?></td>
-							<td><?php echo html_entity_decode($member->firstname . ' ' . $member->lastname); ?></td>
+							<td><?php echo html_entity_decode($member->firstname . ' ' .$member->middlename . ' ' . $member->lastname); ?></td>
 						</tr>
 						<tr class="project-overview">
 							<td class="bold"><?php echo _l('hr_sex'); ?></td>

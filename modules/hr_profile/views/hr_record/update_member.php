@@ -74,6 +74,7 @@ echo staff_profile_image($member->staffid, array('img', 'img-responsive', 'staff
                         <div class="row">
                            <?php $value = (isset($member) ? $member->firstname : '');?>
                            <?php $lastname = (isset($member) ? $member->lastname : '');?>
+                           <?php $middlename = (isset($member) ? $member->middlename : '');?>
                            <?php $attrs = (isset($member) ? array() : array('autofocus' => true));?>
 
                            <div class="col-md-12">
@@ -91,6 +92,12 @@ echo staff_profile_image($member->staffid, array('img', 'img-responsive', 'staff
                               <?php echo render_input('firstname', 'hr_firstname', $value, 'text', $attrs); ?>
                            </div>
                            <div class="col-md-6">
+                              <?php echo render_input('middlename', 'hr_middlename', $middlename, 'text'); ?>
+                           </div>
+                        </div>
+
+                        <div class="row">
+                           <div class="col-md-12">
                               <?php echo render_input('lastname', 'hr_lastname', $lastname, 'text', $attrs); ?>
                            </div>
                         </div>

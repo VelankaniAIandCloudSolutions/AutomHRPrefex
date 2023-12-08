@@ -12,6 +12,7 @@ $custom_fields = get_custom_fields('staff', [
 $aColumns = [
 	'nation',
 	'firstname',
+	'middlename',
 	'staff_identifi',
 	'email',
 	'team_manage',
@@ -137,6 +138,7 @@ if(!is_admin() && !has_permission('hrm_hr_records','','view')){
 
 $result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, [
 	'firstname',
+	'middlename',
 	'email',
 	'staff_identifi',
 	'profile_image',
@@ -146,7 +148,6 @@ $result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, [
 
 $output  = $result['output'];
 $rResult = $result['rResult'];
-
 foreach ($rResult as $aRow) {
 	$row = [];
 	for ($i = 0; $i < count($aColumns); $i++) {
@@ -183,7 +184,7 @@ foreach ($rResult as $aRow) {
 			$_data = '<a href="' . admin_url('hr_profile/member/' . $aRow['staffid']) . '">' . staff_profile_image($aRow['staffid'], [
 				'staff-profile-image-small',
 			]) . '</a>';
-			$_data .= ' <a href="' . admin_url('hr_profile/member/' . $aRow['staffid']) . '">' . $aRow['firstname'] . ' ' . $aRow['lastname'] . '</a>';
+			$_data .= ' <a href="' . admin_url('hr_profile/member/' . $aRow['staffid']) . '">' . $aRow['firstname'] . ' ' .$aRow['middlename'] . ' ' . $aRow['lastname'] . '</a>';
 			
 			$_data .= '<div class="row-options">';
 
