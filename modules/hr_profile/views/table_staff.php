@@ -12,7 +12,6 @@ $custom_fields = get_custom_fields('staff', [
 $aColumns = [
 	'nation',
 	'firstname',
-	'middlename',
 	'staff_identifi',
 	'email',
 	'team_manage',
