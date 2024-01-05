@@ -49,7 +49,7 @@ foreach ($tabs as $group) { ?>
     ?>
                 </ul>
 
-                <a href="<?php echo admin_url('settings?group=update'); ?>"
+                <!-- <a href="<?php echo admin_url('settings?group=update'); ?>"
                     class="tw-flex tw-items-center tw-mb-2 tw-ml-3 settings-group-system-update<?php echo $this->input->get('group') == 'update' ? 'bold': ''; ?>">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="tw-w-5 tw-h-5 tw-mr-2">
@@ -59,7 +59,7 @@ foreach ($tabs as $group) { ?>
                     </svg>
 
                     <?php echo _l('settings_update'); ?>
-                </a>
+                </a> -->
                 <?php if (is_admin()) {
         ?>
                 <a href="<?php echo admin_url('settings?group=info'); ?>"

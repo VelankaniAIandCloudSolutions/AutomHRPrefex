@@ -299,6 +299,11 @@ function render_custom_fields($belongs_to, $rel_id = false, $where = [], $items_
                 $fields_html .= '</script>';
                 $fields_html .= '</div>';
             }
+            if ($field['type'] == 'file') {
+                $t = $field['type'];
+                $fields_html .= render_input($cf_name, $field_name, $value, $t, $_input_attrs);
+            }
+
 
             $name = $cf_name;
 

@@ -114,22 +114,22 @@ class App
      * Upgrade database
      * @return mixed
      */
-    public function upgrade_database()
-    {
-        $update = $this->upgrade_database_silent();
+    // public function upgrade_database()
+    // {
+    //     $update = $this->upgrade_database_silent();
 
-        if ($update['success'] == false) {
-            show_error($update['message']);
-        } else {
-            set_alert('success', 'Your database is up to date');
-            update_option('last_updated_date', time());
-            if (is_staff_logged_in()) {
-                redirect(admin_url('settings?group=update'), 'refresh');
-            } else {
-                redirect(admin_url('authentication'));
-            }
-        }
-    }
+    //     if ($update['success'] == false) {
+    //         show_error($update['message']);
+    //     } else {
+    //         set_alert('success', 'Your database is up to date');
+    //         update_option('last_updated_date', time());
+    //         if (is_staff_logged_in()) {
+    //             redirect(admin_url('settings?group=update'), 'refresh');
+    //         } else {
+    //             redirect(admin_url('authentication'));
+    //         }
+    //     }
+    // }
 
     /**
      * Make request to server to get latest version info

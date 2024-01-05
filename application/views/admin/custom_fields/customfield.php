@@ -154,6 +154,10 @@
                             } ?><?php if (isset($custom_field) && $custom_field->fieldto == 'items') {
                                 echo 'disabled';
                             } ?>>Hyperlink</option>
+                            <option value="file" <?php if (isset($custom_field) && $custom_field->type == 'file') {
+                                echo 'selected';
+                            } ?>>File</option>
+
                             </select>
                         </div>
                         <div class="clearfix"></div>
@@ -418,7 +422,11 @@ $(function() {
             }
         } else if (type === 'link') {
             default_value.addClass('hide');
-        } else if (type === 'textarea') {
+        }
+        else if (type === 'file') {
+            default_value.addClass('hide');
+        }
+         else if (type === 'textarea') {
             $('textarea.default-value').attr('name', 'default_value');
             $('input.default-value').removeAttr('name');
             $('.default-value-textarea-input').removeClass('hide');
@@ -429,7 +437,6 @@ $(function() {
             default_value.removeClass('hide')
             display_inline.find('input').prop('checked', false);
         }
-
         validateDefaultValueField();
     });
 
@@ -465,6 +472,7 @@ function validateDefaultValueField() {
 
     switch (type) {
         case 'input':
+        case 'file':
         case 'link':
         case 'textarea':
             valid.resolve({
@@ -550,7 +558,6 @@ function validateDefaultValueField() {
             })
             break;
     }
-
     valid.done(function(validation) {
         $('#submitForm').prop('disabled', !validation.valid);
         validation.valid ? $error.addClass('hide') : $error.removeClass('hide');
