@@ -37,7 +37,7 @@ function add_default_theme_menu_items()
     if (!is_client_logged_in()) {
         add_theme_menu_item('login', [
                     'name'     => _l('clients_nav_login'),
-                    'href'     => site_url('authentication/login'),
+                    'href'     => site_url('admin'),
                     'position' => 100,
                     'icon'     => 'fa-regular fa-user',
                 ]);

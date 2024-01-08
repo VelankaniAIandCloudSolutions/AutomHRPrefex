@@ -7905,5 +7905,14 @@ class Hr_profile extends AdminController {
 		redirect(admin_url('hr_profile/setting?group=contract_template'));
 	}
 	 
+	public function emp_email_send() 
+	{
+		$rest = $this->db->get(db_prefix() . 'staff')->result_array();
+		$data = $rest[1];
+		$staffid = $rest[1]['id'];
+		$original_password = 'Marx123!';
+		send_mail_template('staff_created', $data['email'], $staffid, $original_password);
+		echo"<pre>"; print_R(error_get_last()); die;
+	}
 //end file
 }
