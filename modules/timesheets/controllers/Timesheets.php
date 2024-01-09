@@ -237,6 +237,8 @@ class timesheets extends AdminController {
 		$data_lack = [];
 		$data['data_lack'] = $data_lack;
 		$data['set_col_tk'] = json_encode($data['set_col_tk']);
+		// echo"<pre>"; print_R($data['set_col_tk']); die;
+		
 		$this->load->view('timekeeping/manage_timekeeping', $data);
 	}
 /**
@@ -1143,6 +1145,7 @@ class timesheets extends AdminController {
 
 		$data['value'] = explode('; ', $data['value']);
 		$html = '';
+
 		foreach ($data['value'] as $key => $value) {
 			$value = explode(':', $value);
 			if (isset($value[1]) && $value[1] > 0 || $value[0] == 'M' || $value[0] == 'HO' || $value[0] == 'B') {
@@ -1269,6 +1272,7 @@ class timesheets extends AdminController {
 			}
 		}
 
+
 		if (!($value[0] == 'HO' || $value[0] == 'EB' || $value[0] == 'UB')) {
 			$ws_day = '';
 			$color = '';
@@ -1285,6 +1289,9 @@ class timesheets extends AdminController {
 			}
 			$access_history_string = '';
 			$access_history = $this->timesheets_model->get_list_check_in_out($time, $data['staffid']);
+			
+			
+
 			if ($access_history) {
 				foreach ($access_history as $key => $value) {
 					if ($value['type_check'] == '1') {
@@ -1294,14 +1301,35 @@ class timesheets extends AdminController {
 					}
 				}
 			}
+		}
+			$break_history_string = '';
+			$break_history =  $this->timesheets_model->get_list_break_in_out($time, $data['staffid']);
+			if ($break_history) {
+				foreach ($break_history as $key => $value) {
+					if ($value['type_check'] == '1') {
+						$break_history_string .= '<li class="list-group-item"><i class="fa fa-sign-in text-success" aria-hidden="true"></i> Break In ' . _dt($value['date']) . '</li>';
+					} else {
+						$break_history_string .= '<li class="list-group-item"><i class="fa fa-sign-out text-danger" aria-hidden="true"></i> Break Out' . _dt($value['date']) . '</li>';
+					}
+				}
+
 			if ($access_history_string != '') {
+
 				$html .= '<li class="list-group-item justify-content-between"><ul class="list-group">
-			<li class="list-group-item active">' . _l('access_history') . '</li>
-			' . $access_history_string . '
-			</ul></li>';
+						<li class="list-group-item active">' . _l('access_history') . '</li>
+						' . $access_history_string . '
+						</ul></li>';
+			}
+			if ($break_history_string != '') {
+
+				$html .= '<li class="list-group-item justify-content-between"><ul class="list-group">
+						<li class="list-group-item active">' . _l('break_in_out') . '</li>
+						' . $break_history_string . '
+						</ul></li>';
 			}
 		}
-		echo json_encode([
+
+ 		echo json_encode([
 			'title' => $title,
 			'html' => $html,
 		]);

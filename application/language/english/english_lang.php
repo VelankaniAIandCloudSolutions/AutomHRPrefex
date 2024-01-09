@@ -3922,4 +3922,5 @@ $lang['break_in']											= "Break Start";
 $lang['break_in_at']										= "Break Start At";
 $lang['break_out']											= "Break End";
 $lang['break_out_at']										= "Break End At";
+$lang['break_in_out']										= "Break In/Out Time";
 
