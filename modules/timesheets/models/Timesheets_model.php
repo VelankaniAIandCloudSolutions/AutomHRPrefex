@@ -6667,6 +6667,9 @@ class timesheets_model extends app_model {
 				}
 			}
 			foreach ($list_date as $key => $value) {
+				
+				$break_time = $this->break_time_calculate($value, $s['staffid']);
+				
 				$date_s = date('D d', strtotime($value));
 				$max_hour = $this->get_hour_shift_staff($s['staffid'], $value);
 				$check_holiday = $this->check_holiday($s['staffid'], $value);
@@ -6696,8 +6699,16 @@ class timesheets_model extends app_model {
 				} else {
 					$result_lack = 'NS';
 				}
-				$dt_ts[$date_s] = $result_lack;
-				$dt_ts_detail[$value] = $result_lack;
+				
+				if($break_time > 0)
+				{
+					$dt_ts_detail[$value] = $result_lack.' | Break: '.$break_time;
+					$dt_ts[$date_s] = $result_lack.' | Break: '.$break_time;
+				}
+				else{
+					$dt_ts_detail[$value] = $result_lack;
+					$dt_ts[$date_s] = $result_lack;
+				}
 			}
 			$data['staff_row_tk'][] = $dt_ts;
 			$data['staff_row_tk_detailt'][] = $dt_ts_detail;
@@ -8192,4 +8203,58 @@ class timesheets_model extends app_model {
         return false;
     }
 
+    /**
+	 * get list break in/out
+	 * @param  $date
+	 * @param  string $staffid
+	 * @return
+	 */
+	public function get_list_break_in_out($date, $staffid = '', $route_point_id = '') {
+		if ($staffid != '') {
+			$this->db->where('staff_id', $staffid);
+		}
+		if ($route_point_id != '') {
+			$this->db->where('route_point_id', $route_point_id);
+		}
+		$this->db->where('date(date) = "' . $date . '"');
+		$this->db->order_by('id');
+		return $this->db->get(db_prefix() . 'break_in_out')->result_array();
+	}
+
+	public function break_time_calculate($value, $staff_id)
+	{
+		$break_details = array();
+		$break_details = $this->db->get_where(db_prefix() ."break_in_out", array("DATE(date)" => $value, "staff_id" => $staff_id))->result_array();
+
+		$total_break_time = 0;
+		$break_in_array = array();
+		$break_out_array = array();
+
+		if (!empty($break_details)) {
+			foreach ($break_details as $break_details_val) {
+				if ($break_details_val['type_check'] == '1') {
+					array_push($break_in_array, $break_details_val['date']);
+				}
+
+				if ($break_details_val['type_check'] == '2') {
+					array_push($break_out_array, $break_details_val['date']);
+				}
+			}
+
+			foreach ($break_in_array as $key => $value) {
+				// Convert date strings to DateTime objects
+				$date1 = new DateTime($break_out_array[$key]);
+				$date2 = new DateTime($break_in_array[$key]);
+
+				// Calculate the time difference
+				$difference = $date2->diff($date1);
+
+				// Convert the difference to minutes
+				$total_break_time += $difference->h * 60 + $difference->i;
+			}
+		}
+		// $total_break_time now contains the total break time in minutes
+		return $total_break_time;
+
+	}
 }

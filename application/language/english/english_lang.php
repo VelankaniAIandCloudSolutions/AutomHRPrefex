@@ -3918,3 +3918,8 @@ $lang['time_tracking']                                      = 'Task Tracking Tim
 $lang['rejecte']                                           = 'Rejecte';
 $lang['approve']                                           = 'Approve';
 
+$lang['break_in']											= "Break Start";
+$lang['break_in_at']										= "Break Start At";
+$lang['break_out']											= "Break End";
+$lang['break_out_at']										= "Break End At";
+

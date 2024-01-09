@@ -187,6 +187,7 @@ class timesheets extends AdminController {
 	 * @return view
 	 */
 	public function timekeeping() {
+
 		if (!(has_permission('attendance_management', '', 'view_own') || has_permission('attendance_management', '', 'view') || is_admin())) {
 			access_denied('timekeeping');
 		}
@@ -6835,5 +6836,28 @@ public function check_in_ts() {
         $data['title'] = _l('ts_api_document');
         $this->load->view('../apidoc/index.html');
     }
+
+    /**
+	 * break in/out timesheet
+	 */
+	public function break_in_ts() {
+
+		if ($this->input->post()) {
+			$data = $this->input->post();
+
+			$input_data = array();
+			$input_data = array(
+				"staff_id"	=> $data['staff_id'],
+				"date"		=> date("Y-m-d H:i:s"),
+				"type_check"=> $data['type_check'],
+				"route_point_id"	=> $data['point_id'],
+				"workplace_id"	=> $data['location_user'],
+			);
+			
+			$this->db->insert("tblbreak_in_out", $input_data);
+			
+			redirect(admin_url('timesheets/timekeeping?group=timesheets'));
+		}
+	}
 
 }
