@@ -809,4 +809,37 @@ class Staff extends AdminController
         }
         echo json_encode($data); die;
     }
+
+     /* Cron job function for employee portal disable on last working days at 8 PM */
+     public function staff_status_inactive()
+     {
+         ini_set("memory_limit", "-1");
+         set_time_limit(0);
+ 
+         $resuts = array();
+         $this->db->select("custom_value.relid as staff_id");
+         $this->db->from(db_prefix() . "customfieldsvalues as custom_value");
+         $this->db->join(db_prefix() . "customfields as customfields","customfields.id = custom_value.fieldid","inner");
+         $this->db->where("customfields.slug","staff_last_working_date");
+         $this->db->where("DATE(custom_value.value)", date("Y-m-d"));
+         $query = $this->db->get();
+         $resuts = $query->result_array();
+         if(sizeof($resuts) > 0)
+         {
+             // Use array_map to extract 'staff_id' values
+             $staffIds = array();
+             $staffIds = array_map(function ($item) {
+                 return $item['staff_id'];
+             }, $resuts);
+             $final_staff_ids = '';
+             $final_staff_ids = implode(",", $staffIds);
+             $this->db->where_in("staffid", $final_staff_ids);
+             $this->db->update(db_prefix() ."", array("active" => "0", "status_work" => "inactivity"));
+ 
+             foreach($resuts as  $resuts_val)
+             {
+                 log_activity('staff inactive on last working date.', $resuts_val['staff_id']);  
+             }
+         }
+     }
 }
