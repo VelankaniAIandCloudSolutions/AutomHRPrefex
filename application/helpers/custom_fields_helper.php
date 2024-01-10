@@ -9,7 +9,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @param  array $items_cf_params          used only for custom fields for items operations
  * @return mixed
  */
-function render_custom_fields($belongs_to, $rel_id = false, $where = [], $items_cf_params = [])
+function render_custom_fields($belongs_to, $rel_id = false, $where = [], $items_cf_params = [], $is_disables = '')
 {
     // Is custom fields for items and in add/edit
     $items_add_edit_preview = isset($items_cf_params['add_edit_preview']) && $items_cf_params['add_edit_preview'] ? true : false;
@@ -121,6 +121,11 @@ function render_custom_fields($belongs_to, $rel_id = false, $where = [], $items_
                 $_input_attrs['disabled'] = true;
             }
 
+            if(isset($is_disables) && $is_disables !="")
+            {
+                $_input_attrs['disabled'] = true;
+            }
+
             $_input_attrs['data-fieldto'] = $field['fieldto'];
             $_input_attrs['data-fieldid'] = $field['id'];
 
@@ -140,9 +145,9 @@ function render_custom_fields($belongs_to, $rel_id = false, $where = [], $items_
                 $t = $field['type'] == 'input' ? 'text' : 'number';
                 $fields_html .= render_input($cf_name, $field_name, $value, $t, $_input_attrs);
             } elseif ($field['type'] == 'date_picker') {
-                $fields_html .= render_date_input($cf_name, $field_name, _d($value), $_input_attrs);
+                $fields_html .= render_date_input($cf_name, $field_name, _d($value), $_input_attrs, '', '', '', $is_disables);
             } elseif ($field['type'] == 'date_picker_time') {
-                $fields_html .= render_datetime_input($cf_name, $field_name, _dt($value), $_input_attrs);
+                $fields_html .= render_datetime_input($cf_name, $field_name, _dt($value), $_input_attrs,'' , '', '', $is_disables);
             } elseif ($field['type'] == 'textarea') {
                 $fields_html .= render_textarea($cf_name, $field_name, $value, $_input_attrs);
             } elseif ($field['type'] == 'colorpicker') {
@@ -157,6 +162,11 @@ function render_custom_fields($belongs_to, $rel_id = false, $where = [], $items_
                 }
 
                 if ($field['disalow_client_to_edit'] == 1 && is_client_logged_in()) {
+                    $_select_attrs['disabled'] = true;
+                }
+
+                if(isset($is_disables) && $is_disables !="")
+                {
                     $_select_attrs['disabled'] = true;
                 }
 
