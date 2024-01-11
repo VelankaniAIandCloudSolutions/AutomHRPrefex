@@ -105,7 +105,9 @@
 
 							<div class="row ">
 								<div class="col-md-6">
-									<label for="position_training_id" class="control-label get_id_row" value ="0" ><span class="text-danger">* </span><?php echo _l('hr_training_item'); ?></label>
+									<label for="position_training_id" class="control-label get_id_row" value ="0" >
+										<!-- <span class="text-danger">* </span> -->
+										<?php echo _l('hr_training_item'); ?></label>
 
 									<select name="position_training_id[]" class="selectpicker mb-5" id="position_training_id[]" data-width="100%" data-live-search="true" multiple="true" data-actions-box="true" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>" data-sl-id="e_criteria[0]" > 
 									</select>

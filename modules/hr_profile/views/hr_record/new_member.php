@@ -75,11 +75,6 @@
 											<?php echo render_input('firstname','hr_firstname',$value,'text',$attrs); ?>
 										</div>
 										<div class="col-md-6">
-											<?php echo render_input('middlename','hr_middlename',$value,'text'); ?>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
 											<?php echo render_input('lastname','hr_lastname',$value,'text',$attrs); ?>
 										</div>
 									</div>

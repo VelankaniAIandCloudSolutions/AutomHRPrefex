@@ -9,6 +9,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @param  array $items_cf_params          used only for custom fields for items operations
  * @return mixed
  */
+// function render_custom_fields($belongs_to, $rel_id = false, $where = [], $items_cf_params = [])
 function render_custom_fields($belongs_to, $rel_id = false, $where = [], $items_cf_params = [], $is_disables = '')
 {
     // Is custom fields for items and in add/edit
@@ -145,9 +146,9 @@ function render_custom_fields($belongs_to, $rel_id = false, $where = [], $items_
                 $t = $field['type'] == 'input' ? 'text' : 'number';
                 $fields_html .= render_input($cf_name, $field_name, $value, $t, $_input_attrs);
             } elseif ($field['type'] == 'date_picker') {
-                $fields_html .= render_date_input($cf_name, $field_name, _d($value), $_input_attrs, '', '', '', $is_disables);
+                $fields_html .= render_date_input($cf_name, $field_name, _d($value), $_input_attrs);
             } elseif ($field['type'] == 'date_picker_time') {
-                $fields_html .= render_datetime_input($cf_name, $field_name, _dt($value), $_input_attrs,'' , '', '', $is_disables);
+                $fields_html .= render_datetime_input($cf_name, $field_name, _dt($value), $_input_attrs);
             } elseif ($field['type'] == 'textarea') {
                 $fields_html .= render_textarea($cf_name, $field_name, $value, $_input_attrs);
             } elseif ($field['type'] == 'colorpicker') {
@@ -165,11 +166,11 @@ function render_custom_fields($belongs_to, $rel_id = false, $where = [], $items_
                     $_select_attrs['disabled'] = true;
                 }
 
-                if(isset($is_disables) && $is_disables !="")
+                 if(isset($is_disables) && $is_disables !="")
                 {
                     $_select_attrs['disabled'] = true;
                 }
-
+                
                 $_select_attrs['data-fieldto'] = $field['fieldto'];
                 $_select_attrs['data-fieldid'] = $field['id'];
 
@@ -309,11 +310,6 @@ function render_custom_fields($belongs_to, $rel_id = false, $where = [], $items_
                 $fields_html .= '</script>';
                 $fields_html .= '</div>';
             }
-            if ($field['type'] == 'file') {
-                $t = $field['type'];
-                $fields_html .= render_input($cf_name, $field_name, $value, $t, $_input_attrs);
-            }
-
 
             $name = $cf_name;
 

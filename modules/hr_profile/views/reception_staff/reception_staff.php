@@ -256,8 +256,8 @@
 								<div class="row">
 									<div class="col-md-12 ">
 										<div class="form-group">
-											<label><small class="req text-danger">* </small><?php echo _l('hr_training_program'); ?></label>
-											<select name="training_program" class="selectpicker" id="training_program" data-width="100%" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>" required> 
+											<label><?php echo _l('hr_training_program'); ?></label>
+											<select name="training_program" class="selectpicker" id="training_program" data-width="100%" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>"> 
 												
 											</select>
 										</div>

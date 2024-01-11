@@ -38,7 +38,7 @@ if($member->staffid == get_staff_user_id())
                   </li>
                   <li role="presentation">
                      <a href="#tab_staff_contact" aria-controls="tab_staff_contact" role="tab" data-toggle="tab">
-                     <?php echo _l('hr_staff_profile_related_info'   ); ?>
+                     <?php echo _l('hr_staff_profile_related_info'); ?>
                      </a>
                   </li>
 
@@ -81,7 +81,6 @@ echo staff_profile_image($member->staffid, array('img', 'img-responsive', 'staff
                         <div class="row">
                            <?php $value = (isset($member) ? $member->firstname : '');?>
                            <?php $lastname = (isset($member) ? $member->lastname : '');?>
-                           <?php $middlename = (isset($member) ? $member->middlename : '');?>
                            <?php $attrs = (isset($member) ? array() : array('autofocus' => true));?>
 
                            <div class="col-md-12">
@@ -99,12 +98,6 @@ echo staff_profile_image($member->staffid, array('img', 'img-responsive', 'staff
                               <?php echo render_input('firstname', 'hr_firstname', $value, 'text', $attrs); ?>
                            </div>
                            <div class="col-md-6">
-                              <?php echo render_input('middlename', 'hr_middlename', $middlename, 'text'); ?>
-                           </div>
-                        </div>
-
-                        <div class="row">
-                           <div class="col-md-12">
                               <?php echo render_input('lastname', 'hr_lastname', $lastname, 'text', $attrs); ?>
                            </div>
                         </div>
@@ -163,7 +156,7 @@ echo render_date_input('birthday', 'hr_hr_birthday', _d($birthday));?>
                            <div class="col-md-6">
                               <div class="form-group">
                                   <label for="status_work" class="control-label"><?php echo _l('hr_status_work'); ?></label>
-                                  <select name="status_work" class="selectpicker" id="status_work" data-width="100%" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>" <?php echo $readonly;?> >
+                                  <select name="status_work" class="selectpicker" id="status_work" data-width="100%" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>" <?php echo $readonly;?>>
                                     <option value="<?php echo 'working'; ?>" <?php if (isset($member) && $member->status_work == 'working') {echo 'selected';}?>><?php echo _l('hr_working'); ?></option>
                                     <option value="<?php echo 'maternity_leave'; ?>" <?php if (isset($member) && $member->status_work == 'maternity_leave') {echo 'selected';}?>><?php echo _l('hr_maternity_leave'); ?></option>
                                     <option value="<?php echo 'inactivity'; ?>" <?php if (isset($member) && $member->status_work == 'inactivity') {echo 'selected';}?>><?php echo _l('hr_inactivity'); ?></option>
@@ -176,7 +169,7 @@ echo render_date_input('birthday', 'hr_hr_birthday', _d($birthday));?>
                            <div class="col-md-6">
                               <div class="form-group">
                                  <label for="job_position" class="control-label"><?php echo _l('hr_hr_job_position'); ?></label>
-                                 <select name="job_position" class="selectpicker" id="job_position" data-width="100%"  data-action-box="true" data-hide-disabled="true" data-live-search="true" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>" <?php echo $readonly;?> >
+                                 <select name="job_position" class="selectpicker" id="job_position" data-width="100%"  data-action-box="true" data-hide-disabled="true" data-live-search="true" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>" <?php echo $readonly;?>>
                                     <option value=""></option>
                                     <?php foreach ($positions as $p) {?>
                                       <option value="<?php echo html_entity_decode($p['position_id']); ?>" <?php if (isset($member) && $member->job_position == $p['position_id']) {echo 'selected';}?>><?php echo html_entity_decode($p['position_name']); ?></option>
@@ -331,6 +324,7 @@ $checked = '';
                         <?php }?>
 
                         <?php $rel_id = (isset($member) ? $member->staffid : false);?>
+                        <!-- <?php //echo render_custom_fields('staff', $rel_id); ?> -->
                         <?php echo render_custom_fields('staff', $rel_id,'','',$readonly); ?>
 
                         <div class="row">

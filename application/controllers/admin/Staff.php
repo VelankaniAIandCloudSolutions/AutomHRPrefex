@@ -179,20 +179,10 @@ class Staff extends AdminController
 
         if ($data['view_all'] == false) {
             unset($data['view_all']);
-            $data['reproting_to'] = $this->db->query('SELECT staffid AS reporting_to_id, firstname AS reporting_to_firstname, lastname AS reporting_to_lastname
-            FROM tblstaff WHERE staffid in (select team_manage from tblstaff where staffid ='.get_staff_user_id().')')->result_array();
         }
+
         $data['logged_time'] = $this->staff_model->get_logged_time_data(get_staff_user_id());
         $data['title']       = '';
-        $timesheet_period= $this->db->query('Select timesheet_range FROM ' . db_prefix() . 'staff WHERE staffid = '. get_staff_user_id())->result_array();
-        if(!empty($timesheet_period))
-        {
-            $data['timesheet_period'] = $timesheet_period[0]['timesheet_range'];
-        }
-        else{
-            $data['timesheet_period'] = 'month';
-        }
-        
         $this->load->view('admin/staff/timesheets', $data);
     }
 
@@ -457,389 +447,36 @@ class Staff extends AdminController
         }
     }
 
-    // Added new function for Time sheet approvals
-    public function time_sheet_approval()
-    {   
-        $ts_filter_data = [];
-
-        $ts_filter_data['period-from'] = $this->input->post('period_from');
-        $ts_filter_data['period-to']   = $this->input->post('period_to');
-        
-        if($this->input->post("timesheet_staff_id") != "")
-        {
-            $id = $this->input->post("timesheet_staff_id");
-        }
-        else{
-            $id = get_staff_user_id();
-        }
-        $logged_time = $this->staff_model->get_logged_time_data($id, $ts_filter_data);
-
-        if($this->input->post('range') === 'today')
-        {
-            $period_from = date("Y-m-d");
-            $period_to = date("Y-m-d");
-        }
-        else{
-            $period_from    = $this->input->post('period_from');
-            $period_to      = $this->input->post('period_to');
-        }
-        if(!empty($logged_time['timesheets']) && sizeof($logged_time['timesheets']) > 0 )
-        {
-            $this->db->select("id,status");
-            $this->db->from('tbltime_sheet_approval');
-            if($this->input->post('reporting_manager_id') != "")
-            {
-                $manager_ids = $this->input->post('reporting_manager_id');
-                $this->db->where_in("reporting_manager_id", $manager_ids);
-            }
-
-            if($id != "")
-            {
-                $this->db->where_in("staff_id", $id);
-            }
-
-            if($this->input->post('range') != "")
-            {
-                $time_range = $this->input->post('range');
-                $this->db->where_in("time_range", $time_range);
-            }
-
-            if($period_from != "" && $period_from != "0000-00-00")
-            {
-                $this->db->where("from_date >=", $period_from);
-                $this->db->where("to_date <=", $period_to);
-            }
-            if($this->input->post('clientid') != "")
-            {
-                $clientid = $this->input->post('clientid');
-                $this->db->where_in("customer_ids", $clientid);
-            }
-
-            // else{
-            //     set_alert('danger', _l('client_not_selected')); die;
-            // }
-            if($this->input->post('project_id') != "")
-            {
-                $project_ids = $this->input->post('project_id');
-                $this->db->where_in("project_ids", $project_ids);
-            }
-            else{
-                set_alert('danger', _l('project_not_selected'));
-            }
-
-            if($this->input->post('reporting_manager_id') != "")
-            {
-                $reporting_manager_id = $this->input->post('reporting_manager_id');
-                $this->db->where_in("reporting_manager_id", $reporting_manager_id);
-            }
-            else{
-                set_alert('danger', _l('reporting_manager_not_selected'));
-            }
-            
-            $this->db->where("status != '2'");
-
-            $time_sheet_exist = $this->db->get();
-            $time_sheet_exist_results = $time_sheet_exist->result_array();
-            if(!empty($time_sheet_exist_results))
-            {
-                $pending_counts = 0;
-                $approved_counts = 0;
-                foreach($time_sheet_exist_results as $timesheet_val)
-                {
-                    if($timesheet_val['status'] == '0')
-                    {
-                        $pending_counts++;
-                    }
-                    elseif($timesheet_val['status'] == '1'){
-                        $approved_counts++;
-                    }
-                } 
-                if($pending_counts > 0)
-                {
-                    set_alert('warning', _l('total_pending_timesheet').' : '. $pending_counts." and "._l('total_approved_timesheet').' : '. $approved_counts);
-                }
-                elseif($pending_counts == 0)
-                {
-                    set_alert('warning',_l('timesheet_activity_exist'));
-                }
-            }
-            else{
-                $times_sheet_json_array[] = $logged_time['timesheets'];
-                $approval_data = array();
-                $approval_data = array(
-                    "staff_id"              =>  $id,
-                    "reporting_manager_id"  =>  $this->input->post('reporting_manager_id'),
-                    "time_range"            =>  $this->input->post('range'),
-                    "from_date"             =>  $period_from,
-                    "to_date"               =>  $period_to,
-                    "customer_ids"          =>  $this->input->post('clientid'),
-                    "project_ids"           =>  implode(",",$this->input->post('project_id')),
-                    "status"                =>  '0',
-                    "logged_time_sheet"     =>  json_encode($times_sheet_json_array)
-                );
-                $this->db->insert("tbltime_sheet_approval",$approval_data);
-                set_alert('success', _l('timesheet_send_to_reporting_manager')); die;
-            }
-        }
-        else{
-            set_alert('danger', _l('activity_not_recorded')); die;
-        }
-    }
-
-
-    public function fequency_date_calculate()
-    {
-        $timesheet_staff_id = '';
-        $start_date = $end_date = '';
-
-        $timesheet_staff_id = $this->input->post("timesheet_staff_id");
-        $frequency = $this->input->post("frequency");
-        $startDate = $this->input->post("start_date");
-        
-
-        if($timesheet_staff_id != "")
-        {
-            $timesheet_period= $this->db->query('Select timesheet_range FROM ' . db_prefix() . 'staff WHERE staffid = '. $timesheet_staff_id)->result_array();
-            if(!empty($timesheet_period))
-            {
-                $frequency = $timesheet_period[0]['timesheet_range'];
-            }
-            else{
-                $frequency ='month';
-            }
-        }
-        else{
-            $timesheet_period= $this->db->query('Select timesheet_range FROM ' . db_prefix() . 'staff WHERE staffid = '. get_staff_user_id())->result_array();
-            if(!empty($timesheet_period))
-            {
-                $frequency = $timesheet_period[0]['timesheet_range'];
-            }
-            else{
-                $frequency ='month';
-            }
-        }
-
-        if($frequency === 'month')
-        {
-            if($startDate != '')
-            {
-                $start_date = date("Y-m-d", strtotime($startDate));
-                $end_date = date("Y-m-d", strtotime("+1 month", strtotime($startDate)));
-            }
-            else{
-                $start_date = date("Y-m-d", strtotime("-1 month"));
-                $end_date = date("Y-m-d");
-            }
-           
-            // Subtract 1 day from the end date
-            $end_date = date("Y-m-d", strtotime($end_date . ' -1 day'));
-
-            $data = array(
-                "start_date"    => $start_date,
-                "end_date"      => $end_date
-            );
-            echo json_encode($data);
-        }
-        elseif($frequency=== 'weekly')
-        {
-            if($startDate != '')
-            {
-                $start_date = date("Y-m-d", strtotime($startDate));
-                $end_date = date("Y-m-d", strtotime("+1 week", strtotime($startDate)));
-            }
-            else{
-                $start_date = date("Y-m-d", strtotime("-1 week"));
-                $end_date = date("Y-m-d");
-            }
-            // Subtract 1 day from the end date
-            $end_date = date("Y-m-d", strtotime($end_date . ' -1 day'));
-
-            $data = array(
-                "start_date"    => $start_date,
-                "end_date"      => $end_date
-            );
-            echo json_encode($data);
-        }
-        elseif($frequency=== 'biweekly')
-        {
-            if($startDate != '')
-            {
-                $start_date = date("Y-m-d", strtotime($startDate));
-                $end_date = date("Y-m-d", strtotime("+2 week", strtotime($startDate)));
-            }
-            else{
-                $start_date = date("Y-m-d", strtotime("-2 week"));
-                $end_date = date("Y-m-d");
-            }
-            // Subtract 1 day from the end date
-            $end_date = date("Y-m-d", strtotime($end_date . ' -1 day'));
-
-            $data = array(
-                "start_date"    => $start_date,
-                "end_date"      => $end_date
-            );
-            echo json_encode($data);
-        }
-        else{
-            return false; 
-        }
-        die;
-    }
-
-    public function timesheet_tracking_status()
-    {
-        $ts_filter_data = [];
-        $ts_filter_data['period-from'] = $this->input->post('start_date');
-        $ts_filter_data['period-to']   = $this->input->post('period_to');
-        if($this->input->post("timesheet_staff_id") != "")
-        {
-            $id = $this->input->post("timesheet_staff_id");
-        }
-        else{
-            $id = get_staff_user_id();
-        }
-
-        $logged_time = $this->staff_model->get_logged_time_data($id, $ts_filter_data);
-        
-        if($this->input->post('range') === 'today')
-        {
-            $period_from = date("Y-m-d");
-            $period_to = date("Y-m-d");
-        }
-        else{
-            $period_from    = $this->input->post('period_from');
-            $period_to      = $this->input->post('period_to');
-        }
-        if(!empty($logged_time['timesheets']) && sizeof($logged_time['timesheets']) > 0 )
-        {
-            $this->db->select("id,status");
-            $this->db->from('tbltime_sheet_approval');
-
-            if($this->input->post('reporting_manager_id') != "")
-            {
-                $manager_ids = $this->input->post('reporting_manager_id');
-                $this->db->where_in("reporting_manager_id", $manager_ids);
-            }
-
-            if($id != "")
-            {
-                $this->db->where_in("staff_id", $id);
-            }
-
-            if($this->input->post('range') != "")
-            {
-                $time_range = $this->input->post('range');
-                $this->db->where_in("time_range", $time_range);
-            }
-
-            if($period_from != "" && $period_from != "0000-00-00")
-            {
-                $this->db->where("from_date >=", $period_from);
-                $this->db->where("to_date <=", $period_to);
-            }
-
-            if($this->input->post('clientid') != "")
-            {
-                $clientid = $this->input->post('clientid');
-                $this->db->where_in("customer_ids", $clientid);
-            }
-            // else{
-            //     set_alert('danger', _l('client_not_selected')); 
-            // }
-            
-            if(isset($_POST['project_id']) && $_POST['project_id'] > 0 )
-            {
-                $project_ids = $this->input->post('project_id');
-                $this->db->where_in("project_ids", $project_ids);
-            }
-            // else{
-            //     set_alert('danger', _l('project_not_selected'));
-            // }
-
-            if($this->input->post('reporting_manager_id') != "")
-            {
-                $reporting_manager_id = $this->input->post('reporting_manager_id');
-                $this->db->where_in("reporting_manager_id", $reporting_manager_id);
-            }
-            // else{
-            //     set_alert('danger', _l('reporting_manager_not_selected'));
-            // }
-            
-            $this->db->where("status != '2'");
-            // $this->db->group_by("staff_id,reporting_manager_id,time_range,project_ids");
-            $this->db->order_by("id","desc");
-            $this->db->limit(1);
-            $time_sheet_exist = $this->db->get();
-
-
-            $time_sheet_exist_results = $time_sheet_exist->result_array();
-            if(!empty($time_sheet_exist_results))
-            {
-                $pending_counts = 0;
-                $approved_counts = 0;
-                foreach($time_sheet_exist_results as $timesheet_val)
-                {
-                    if($timesheet_val['status'] == '0')
-                    {
-                        $pending_counts++;
-                    }
-                    elseif($timesheet_val['status'] == '1'){
-                        $approved_counts++;
-                    }
-                } 
-                if($pending_counts > 0)
-                {
-                    $data['status'] = "0"; // pending for approval 
-                }
-                elseif($pending_counts == 0 && $approved_counts > 0)
-                {
-                    $data['status'] = "1"; // approved  timesheet by reporting manager
-                }
-                else{
-                    $data['status'] = "3";  //  Not submitted
-                }
-            }
-            else{
-                $data['status'] = "3";  // Not submitted
-            }
-        }
-        else
-        {
-            $data['status'] = "4";  // time tacking records not avaialble.
-        }
-        echo json_encode($data); die;
-    }
-
      /* Cron job function for employee portal disable on last working days at 8 PM */
-     public function staff_status_inactive()
-     {
-         ini_set("memory_limit", "-1");
-         set_time_limit(0);
- 
-         $resuts = array();
-         $this->db->select("custom_value.relid as staff_id");
-         $this->db->from(db_prefix() . "customfieldsvalues as custom_value");
-         $this->db->join(db_prefix() . "customfields as customfields","customfields.id = custom_value.fieldid","inner");
-         $this->db->where("customfields.slug","staff_last_working_date");
-         $this->db->where("DATE(custom_value.value)", date("Y-m-d"));
-         $query = $this->db->get();
-         $resuts = $query->result_array();
-         if(sizeof($resuts) > 0)
-         {
-             // Use array_map to extract 'staff_id' values
-             $staffIds = array();
-             $staffIds = array_map(function ($item) {
-                 return $item['staff_id'];
-             }, $resuts);
-             $final_staff_ids = '';
-             $final_staff_ids = implode(",", $staffIds);
-             $this->db->where_in("staffid", $final_staff_ids);
-             $this->db->update(db_prefix() ."", array("active" => "0", "status_work" => "inactivity"));
- 
-             foreach($resuts as  $resuts_val)
-             {
-                 log_activity('staff inactive on last working date.', $resuts_val['staff_id']);  
-             }
-         }
-     }
+    public function staff_status_inactive()
+    {
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+
+        $resuts = array();
+        $this->db->select("custom_value.relid as staff_id");
+        $this->db->from(db_prefix() . "customfieldsvalues as custom_value");
+        $this->db->join(db_prefix() . "customfields as customfields","customfields.id = custom_value.fieldid","inner");
+        $this->db->where("customfields.slug","staff_last_working_date");
+        $this->db->where("DATE(custom_value.value)", date("Y-m-d"));
+        $query = $this->db->get();
+        $resuts = $query->result_array();
+        if(sizeof($resuts) > 0)
+        {
+            // Use array_map to extract 'staff_id' values
+            $staffIds = array_map(function ($item) {
+                return $item['staff_id'];
+            }, $resuts);
+
+            $final_staff_ids = implode(",", $staffIds);
+            $this->db->where_in("staffid", $final_staff_ids);
+            $this->db->update(db_prefix() ."", array("active" => "0", "status_work" => "inactivity"));
+
+            foreach($resuts as  $resuts_val)
+            {
+                log_activity('staff inactive on last working date.', $resuts_val['staff_id']);  
+            }
+        }
+    }
+
 }

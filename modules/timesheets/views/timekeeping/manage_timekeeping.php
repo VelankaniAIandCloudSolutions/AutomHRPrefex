@@ -57,7 +57,6 @@
         <a href="javascript:void(0)" class="btn btn-default pull-right mtop5 mleft10 export_excel">
           <i class="fa fa-file-excel"></i> <?php echo _l('export_to_excel'); ?>
         </a>
-
         <?php if($data_timekeeping_form == 'timekeeping_manually'){ ?>
           <button type="button" onclick="open_check_in_out();" class="btn btn-info pull-right display-block mtop5 check_in_out_timesheet" data-toggle="tooltip" title="" data-original-title="<?php echo _l('check_in').' / '._l('check_out'); ?>"><?php echo _l('check_in'); ?> / <?php echo _l('check_out'); ?></button>
         <?php }elseif($data_timekeeping_form == 'csv_clsx'){ ?>

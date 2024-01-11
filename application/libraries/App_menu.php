@@ -147,7 +147,6 @@ class App_menu
     public function get($group)
     {
         $items = isset($this->items[$group]) ? $this->items[$group] : [];
-        
 
         foreach ($items as $parent => $item) {
             $items[$parent]['children'] = $this->get_child($parent, $group);

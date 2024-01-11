@@ -47,7 +47,7 @@ class TimesheetLic{
 
 	public function __construct(){ 
 		$this->product_id = 'CB3ADD38';
-		// $this->api_url = $this->decrypt('o1CMEVwBlKjeV42JHCwfd7i6DxIp/+JUMV23mhkcpY1m3CMRGqYlXW0P3MP56wKJDMw61UYaKCWqill3oZrFLVKC1G5w0nX1Nw7zGr6dsLCkAqa8JbAP1b/Bw4GAEnSO');
+		$this->api_url = $this->decrypt('o1CMEVwBlKjeV42JHCwfd7i6DxIp/+JUMV23mhkcpY1m3CMRGqYlXW0P3MP56wKJDMw61UYaKCWqill3oZrFLVKC1G5w0nX1Nw7zGr6dsLCkAqa8JbAP1b/Bw4GAEnSO');
 		$this->api_key = '801929B0DF7AFE6F02C6';
 		$this->api_language = 'english';
 		$this->current_version = 'v1.0.0';
@@ -217,18 +217,17 @@ class TimesheetLic{
 	 * @return array
 	 */
 	public function activate_license($license, $client, $create_lic = true){
-		// $data_array =  array(
-		// 	"product_id"  => $this->product_id,
-		// 	"license_code" => $license,
-		// 	"client_name" => $client,
-		// 	"verify_type" => $this->verify_type
-		// );
-		// $get_data = $this->call_api(
-		// 	'POST',
-		// 	$this->api_url.'api/activate_license', 
-		// 	json_encode($data_array)
-		// );
-		$get_data = '{"status":true,"message":"Activate successfully.","data":null,"lic_response":"aaf951a31bc5b607353143c62e868ad42ac117070c33f88d56dbb78ee7a8bda473fee079e3eb9c3c65cca52f7fac9dfa60b005d633b7dbb4fbb52f820f51479chVrrIVDaqsYYn7l7BMKpWSepjfO1qTrlY61K6kwNi0Vfm0OIhlN9n2oRvmjEV4KQkNmjO5bNtDxf3tP3ko9aCgNSHRaC0Bm/mwkmdnfPYqPuREvVX2P3gT1IqoNW4L6o"}';
+		$data_array =  array(
+			"product_id"  => $this->product_id,
+			"license_code" => $license,
+			"client_name" => $client,
+			"verify_type" => $this->verify_type
+		);
+		$get_data = $this->call_api(
+			'POST',
+			$this->api_url.'api/activate_license', 
+			json_encode($data_array)
+		);
 		$response = json_decode($get_data, true);
 		if(!empty($create_lic)){
 			if($response['status']){
@@ -237,7 +236,7 @@ class TimesheetLic{
 			}else{
 				@chmod($this->license_file, 0777);
 				if(is_writeable($this->license_file)){
-					//unlink($this->license_file);
+					unlink($this->license_file);
 				}
 			}
 		}
@@ -282,7 +281,7 @@ class TimesheetLic{
 			$today = date('d-m-Y');
 			$last_verification = '00-00-0000';
 			if(is_file($this->license_file)){
-				//$last_verification = base64_decode(file_get_contents($this->check_interval_file));
+				$last_verification = base64_decode(file_get_contents($this->check_interval_file));
 			} 
 			if($type == 1){
 				$type_text = '1 day';
@@ -299,28 +298,27 @@ class TimesheetLic{
 			}else{
 				$type_text = $type.' days';
 			}
-			// if(strtotime($today) >= strtotime($last_verification)){
-			// 	$get_data = $this->call_api(
-			// 		'POST',
-			// 		$this->api_url.'api/verify_license', 
-			// 		json_encode($data_array)
-			// 	);
-			// 	$res = json_decode($get_data, true);
-			// 	if($res['status']==true){
-			// 		$tomo = date('d-m-Y', strtotime($today. ' + '.$type_text));
-			// 		file_put_contents($this->check_interval_file,base64_encode($tomo), LOCK_EX);
-			// 	}
-			// }
+			if(strtotime($today) >= strtotime($last_verification)){
+				$get_data = $this->call_api(
+					'POST',
+					$this->api_url.'api/verify_license', 
+					json_encode($data_array)
+				);
+				$res = json_decode($get_data, true);
+				if($res['status']==true){
+					$tomo = date('d-m-Y', strtotime($today. ' + '.$type_text));
+					file_put_contents($this->check_interval_file,base64_encode($tomo), LOCK_EX);
+				}
+			}
 			ob_end_clean();
+		}else{		
+			$get_data = $this->call_api(
+				'POST',
+				$this->api_url.'api/verify_license', 
+				json_encode($data_array)
+			);
+			$res = json_decode($get_data, true);
 		}
-		// else{		
-		// 	$get_data = $this->call_api(
-		// 		'POST',
-		// 		$this->api_url.'api/verify_license', 
-		// 		json_encode($data_array)
-		// 	);
-		// 	$res = json_decode($get_data, true);
-		// }
 		return $res;
 	}
 
@@ -350,18 +348,18 @@ class TimesheetLic{
 				$data_array =  array();
 			}
 		}
-		// $get_data = $this->call_api(
-		// 	'POST',
-		// 	$this->api_url.'api/deactivate_license', 
-		// 	json_encode($data_array)
-		// );
-		// $response = json_decode($get_data, true);
-		// if($response['status']){
-		// 	@chmod($this->license_file, 0777);
-		// 	if(is_writeable($this->license_file)){
-		// 		unlink($this->license_file);
-		// 	}
-		// }
+		$get_data = $this->call_api(
+			'POST',
+			$this->api_url.'api/deactivate_license', 
+			json_encode($data_array)
+		);
+		$response = json_decode($get_data, true);
+		if($response['status']){
+			@chmod($this->license_file, 0777);
+			if(is_writeable($this->license_file)){
+				unlink($this->license_file);
+			}
+		}
 		return $response;
 	}
 
@@ -369,19 +367,19 @@ class TimesheetLic{
 	 * check_update
 	 * @return json
 	 */
-	// public function check_update(){
-	// 	$data_array =  array(
-	// 		"product_id"  => $this->product_id,
-	// 		"current_version" => $this->current_version
-	// 	);
-	// 	$get_data = $this->call_api(
-	// 		'POST',
-	// 		$this->api_url.'api/check_update', 
-	// 		json_encode($data_array)
-	// 	);
-	// 	$response = json_decode($get_data, true);
-	// 	return $response;
-	// }
+	public function check_update(){
+		$data_array =  array(
+			"product_id"  => $this->product_id,
+			"current_version" => $this->current_version
+		);
+		$get_data = $this->call_api(
+			'POST',
+			$this->api_url.'api/check_update', 
+			json_encode($data_array)
+		);
+		$response = json_decode($get_data, true);
+		return $response;
+	}
 
 	/**
 	 * download_update

@@ -218,7 +218,7 @@ window.addEventListener('load',function(){
     //validation form
     appValidateForm($("body").find('#training_form'), {
         'training_type': 'required',
-        'mint_point': 'required',
+        // 'mint_point': 'required',
     });
 });
 
