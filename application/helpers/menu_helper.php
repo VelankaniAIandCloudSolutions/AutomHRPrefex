@@ -332,16 +332,6 @@ function app_init_admin_sidebar_menu_items()
         ]);
     }
 
-    if (has_permission('reports', '', 'timesheet_approval_list')) {
-        $CI->app_menu->add_sidebar_children_item('reports', [
-            'slug'     => 'timesheet-list',
-            'name'     => _l('timesheet_approval_list'),
-            'href'     => admin_url('reports/timesheet_approval_list'),
-            'position' => 6,
-            'badge'    => [],
-        ]);
-    }
-
     // Setup menu
     if (has_permission('staff', '', 'view')) {
         $CI->app_menu->add_setup_menu_item('staff', [

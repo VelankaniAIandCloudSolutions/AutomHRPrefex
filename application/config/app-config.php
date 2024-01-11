@@ -46,32 +46,15 @@ define('APP_DB_HOSTNAME', 'localhost');
 /**
  * The username used to connect to the database
  */
-if($_SERVER['HTTP_HOST'] ==='localhost' || $_SERVER['HTTP_HOST'] ==='127.0.0.1')
-{
-    define('APP_DB_USERNAME', 'root');
-    /**
-     * The password used to connect to the database
-     */
-    define('APP_DB_PASSWORD', '');
-    /**
-     * The name of the database you want to connect to
-     */
-    define('APP_DB_NAME', 'marx_velankanidb_crm');
-}
-else{
-    /**
-     * The username used to connect to the database
-     */
-    define('APP_DB_USERNAME', 'root');
-    /**
-     * The password used to connect to the database
-     */
-    define('APP_DB_PASSWORD', 'Velankanidb@2123');
-    /**
-     * The name of the database you want to connect to
-     */
-    define('APP_DB_NAME', 'velankanidb_crm');
-}
+define('APP_DB_USERNAME', 'root');
+/**
+ * The password used to connect to the database
+ */
+define('APP_DB_PASSWORD', '');
+/**
+ * The name of the database you want to connect to
+ */
+define('APP_DB_NAME', 'marx_velankanidb_crm');
 
 /**
  * @since  2.3.0

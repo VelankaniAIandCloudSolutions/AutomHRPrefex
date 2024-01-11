@@ -135,7 +135,7 @@ function render_color_picker($name, $label = '', $value = '', $input_attrs = [])
  * @param  string $input_class      <input> additional class
  * @return string
  */
-function render_date_input($name, $label = '', $value = '', $input_attrs = [], $form_group_attr = [], $form_group_class = '', $input_class = '', $disabled = '')
+function render_date_input($name, $label = '', $value = '', $input_attrs = [], $form_group_attr = [], $form_group_class = '', $input_class = '' , $disabled = '')
 {
     $input            = '';
     $_form_group_attr = '';
@@ -173,7 +173,7 @@ function render_date_input($name, $label = '', $value = '', $input_attrs = [], $
         $input .= '<label for="' . $name . '" class="control-label">' . _l($label, '', false) . '</label>';
     }
     $input .= '<div class="input-group date">';
-    $input .= '<input type="text" id="' . $name . '" name="' . $name . '" class="form-control datepicker' . $input_class . '" ' . $_input_attrs . ' value="' . set_value($name, $value) . '" autocomplete="off" '.$disabled.'>';
+    $input .= '<input type="text" id="' . $name . '" name="' . $name . '" class="form-control datepicker' . $input_class . '" ' . $_input_attrs . ' value="' . set_value($name, $value) . '" autocomplete="off"  '.$disabled.'>';
     $input .= '<div class="input-group-addon">
     <i class="fa-regular fa-calendar calendar-icon"></i>
 </div>';
@@ -193,8 +193,9 @@ function render_date_input($name, $label = '', $value = '', $input_attrs = [], $
  * @param  string $input_class      <input> additional class
  * @return string
  */
-function render_datetime_input($name, $label = '', $value = '', $input_attrs = [], $form_group_attr = [], $form_group_class = '', $input_class = '', $disabled = '')
+function render_datetime_input($name, $label = '', $value = '', $input_attrs = [], $form_group_attr = [], $form_group_class = '', $input_class = '' , $disabled = '')
 {
+    // $html = render_date_input($name, $label, $value, $input_attrs, $form_group_attr, $form_group_class, $input_class);
     $html = render_date_input($name, $label, $value, $input_attrs, $form_group_attr, $form_group_class, $input_class, $disabled);
     $html = str_replace('datepicker', 'datetimepicker', $html);
 

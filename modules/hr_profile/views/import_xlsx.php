@@ -5,7 +5,6 @@
 		$file_header[] = _l('id');
 		$file_header[] = _l('hr_staff_code'); //*
 		$file_header[] = _l('hr_firstname'); //*
-		$file_header[] = _l('hr_middlename');
 		$file_header[] = _l('hr_lastname');	//*
 		$file_header[] = _l('hr_sex');
 		$file_header[] = _l('hr_hr_birthday');
@@ -80,7 +79,7 @@
 											$total_fields = 0;
 											
 											for($i=0;$i<count($file_header);$i++){
-												if( $i == 2 ||$i == 4 ||$i == 7 ||$i == 10 || $i == 11){
+												if( $i == 2 ||$i == 3 ||$i == 6 ||$i == 9 || $i == 10){
 													?>
 													<th class="bold"><span class="text-danger">*</span> <?php echo html_entity_decode($file_header[$i]); ?> </th>
 													<?php 

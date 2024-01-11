@@ -5,7 +5,7 @@ var position_training_id = {};
     appValidateForm($("body").find('.job_position_training_add_edit'), {
       'training_type': 'required',
       'job_position_id[]': 'required',
-      'mint_point': 'required',
+      // 'mint_point': 'required',
     });
 
   });  

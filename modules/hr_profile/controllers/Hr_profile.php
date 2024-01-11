@@ -2237,7 +2237,6 @@ class Hr_profile extends AdminController {
 							_l('id') => 'string',
 							_l('hr_staff_code') => 'string',
 							_l('hr_firstname') => 'string',
-							_l('hr_middlename') => 'string',
 							_l('hr_lastname') => 'string',
 							_l('hr_sex') => 'string',
 							_l('hr_hr_birthday') => 'string',
@@ -2282,7 +2281,7 @@ class Hr_profile extends AdminController {
 						$style1 = ['widths' => $widths, 'fill' => '#fc2d42', 'font-style' => 'bold', 'color' => '#0a0a0a', 'border' => 'left,right,top,bottom', 'border-color' => '#0a0a0a', 'font-size' => 13];
 
 						//red: required
-						$col_style2 = [2, 4, 7, 10, 11];
+						$col_style2 = [2, 3, 6, 9, 10];
 						$style2 = ['widths' => $widths, 'fill' => '#ff9800', 'font-style' => 'bold', 'color' => '#0a0a0a', 'border' => 'left,right,top,bottom', 'border-color' => '#0a0a0a', 'font-size' => 13];
 
 						//otherwise blue: can be update
@@ -2297,44 +2296,42 @@ class Hr_profile extends AdminController {
 						$xlsx = new XLSXReader_fin($newFilePath);
 						$sheetNames = $xlsx->getSheetNames();
 						$data = $xlsx->getSheetData($sheetNames[1]);
-						
 						$arr_header = [];
 
 						$arr_header['staffid'] = 0;
 						$arr_header['staff_identifi'] = 1;
 						$arr_header['firstname'] = 2;
-						$arr_header['middlename'] = 3;
-						$arr_header['lastname'] = 4;
-						$arr_header['sex'] = 5;
-						$arr_header['birthday'] = 6;
-						$arr_header['email'] = 7;
-						$arr_header['phonenumber'] = 8;
-						$arr_header['workplace'] = 9;
-						$arr_header['status_work'] = 10;
-						$arr_header['job_position'] = 11;
-						$arr_header['team_manage'] = 12;
-						$arr_header['role'] = 13;
-						$arr_header['literacy'] = 14;
-						$arr_header['hourly_rate'] = 15;
-						$arr_header['department'] = 16;
-						$arr_header['password'] = 17;
-						$arr_header['home_town'] = 18;
-						$arr_header['marital_status'] = 19;
-						$arr_header['current_address'] = 20;
-						$arr_header['nation'] = 21;
-						$arr_header['birthplace'] = 22;
-						$arr_header['religion'] = 23;
-						$arr_header['identification'] = 24;
-						$arr_header['days_for_identity'] = 25;
-						$arr_header['place_of_issue'] = 26;
-						$arr_header['resident'] = 27;
-						$arr_header['account_number'] = 28;
-						$arr_header['name_account'] = 29;
-						$arr_header['issue_bank'] = 30;
-						$arr_header['Personal_tax_code'] = 31;
-						$arr_header['facebook'] = 32;
-						$arr_header['linkedin'] = 33;
-						$arr_header['skype'] = 34;
+						$arr_header['lastname'] = 3;
+						$arr_header['sex'] = 4;
+						$arr_header['birthday'] = 5;
+						$arr_header['email'] = 6;
+						$arr_header['phonenumber'] = 7;
+						$arr_header['workplace'] = 8;
+						$arr_header['status_work'] = 9;
+						$arr_header['job_position'] = 10;
+						$arr_header['team_manage'] = 11;
+						$arr_header['role'] = 12;
+						$arr_header['literacy'] = 13;
+						$arr_header['hourly_rate'] = 14;
+						$arr_header['department'] = 15;
+						$arr_header['password'] = 16;
+						$arr_header['home_town'] = 17;
+						$arr_header['marital_status'] = 18;
+						$arr_header['current_address'] = 19;
+						$arr_header['nation'] = 20;
+						$arr_header['birthplace'] = 21;
+						$arr_header['religion'] = 22;
+						$arr_header['identification'] = 23;
+						$arr_header['days_for_identity'] = 24;
+						$arr_header['place_of_issue'] = 25;
+						$arr_header['resident'] = 26;
+						$arr_header['account_number'] = 27;
+						$arr_header['name_account'] = 28;
+						$arr_header['issue_bank'] = 29;
+						$arr_header['Personal_tax_code'] = 30;
+						$arr_header['facebook'] = 31;
+						$arr_header['linkedin'] = 32;
+						$arr_header['skype'] = 33;
 
 						$pattern = '#^[a-z][a-z0-9\._]{2,31}@[a-z0-9\-]{3,}(\.[a-z]{2,4}){1,2}$#';
 						$reg_day = '#^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$#';
@@ -2380,11 +2377,12 @@ class Hr_profile extends AdminController {
 						$total_row_success = 0;
 
 						$column_key = $data[1];
+
 						//write the next row (row2)
 						$writer->writeSheetRow('Sheet1', array_keys($arr_header));
 
 						for ($row = 2; $row < count($data); $row++) {
-							
+
 							$total_rows++;
 
 							$rd = array();
@@ -2400,10 +2398,10 @@ class Hr_profile extends AdminController {
 							$flag_value_role = 0;
 							$flag_value_department = [];
 							$permissions = [];
+
 							$value_staffid = isset($data[$row][$arr_header['staffid']]) ? $data[$row][$arr_header['staffid']] : '';
 							$value_staff_identifi = isset($data[$row][$arr_header['staff_identifi']]) ? $data[$row][$arr_header['staff_identifi']] : '';
 							$value_firstname = isset($data[$row][$arr_header['firstname']]) ? $data[$row][$arr_header['firstname']] : '';
-							$value_middlename = isset($data[$row][$arr_header['middlename']]) ? $data[$row][$arr_header['middlename']] : '';
 							$value_lastname = isset($data[$row][$arr_header['lastname']]) ? $data[$row][$arr_header['lastname']] : '';
 							$value_sex = isset($data[$row][$arr_header['sex']]) ? $data[$row][$arr_header['sex']] : '';
 
@@ -2436,22 +2434,24 @@ class Hr_profile extends AdminController {
 							$value_facebook = isset($data[$row][$arr_header['facebook']]) ? $data[$row][$arr_header['facebook']] : '';
 							$value_linkedin = isset($data[$row][$arr_header['linkedin']]) ? $data[$row][$arr_header['linkedin']] : '';
 							$value_skype = isset($data[$row][$arr_header['skype']]) ? $data[$row][$arr_header['skype']] : '';
-							
+
 							/*check null*/
 							if (is_null($value_firstname) == true || $value_firstname == '') {
 								$string_error .= _l('hr_firstname') . ' ' . _l('not_yet_entered') . '; ';
 								$flag = 1;
 							}
+
 							/*check null*/
 							if (is_null($value_lastname) == true || $value_lastname == '') {
 								$string_error .= _l('hr_lastname') . ' ' . _l('not_yet_entered') . '; ';
 								$flag = 1;
 							}
+
 							if (is_null($value_status_work) == true || $value_status_work == '') {
 								$string_error .= _l('hr_status_work') . ' ' . _l('not_yet_entered') . '; ';
 								$flag = 1;
 							}
-							
+
 							if (is_null($value_job_position) == true || $value_job_position == '') {
 								$string_error .= _l('hr_hr_job_position') . ' ' . _l('not_yet_entered') . '; ';
 								$flag = 1;
@@ -2491,7 +2491,7 @@ class Hr_profile extends AdminController {
 								}
 
 							}
-							
+
 							//check start_time
 							if (is_null($value_birthday) != true && $value_birthday != '') {
 
@@ -2521,7 +2521,7 @@ class Hr_profile extends AdminController {
 									}
 								}
 							}
-							
+
 							//check position is int
 							if (is_null($value_job_position) != true && strlen($value_job_position) > 0) {
 
@@ -2531,8 +2531,9 @@ class Hr_profile extends AdminController {
 								} else {
 									$flag_value_job_position = $job_position_data[$value_job_position]['position_id'];
 								}
+
 							}
-							
+
 							//value_team_manage
 							if (is_null($value_team_manage) != true && strlen($value_team_manage) > 0) {
 
@@ -2591,7 +2592,7 @@ class Hr_profile extends AdminController {
 								}
 
 							}
-							
+
 							//check department
 							if (is_null($value_department) != true && strlen($value_department) > 0) {
 								$arr_department_value = explode(';', $value_department);
@@ -2624,13 +2625,13 @@ class Hr_profile extends AdminController {
 								}
 
 							}
+
 							if (($flag == 1) || $flag2 == 1) {
 								//write error file
 								$writer->writeSheetRow('Sheet1', [
 									$value_staffid,
 									$value_staff_identifi,
 									$value_firstname,
-									$value_middlename,
 									$value_lastname,
 									$value_sex,
 									$value_birthday,
@@ -2674,7 +2675,6 @@ class Hr_profile extends AdminController {
 								$rd['staffid'] = $value_staffid;
 								$rd['staff_identifi'] = $staff_prefix_str . str_pad($staff_next_number, 5, '0', STR_PAD_LEFT);
 								$rd['firstname'] = $value_firstname;
-								$rd['middlename'] = $value_middlename;
 								$rd['lastname'] = $value_lastname;
 								$rd['sex'] = $value_sex;
 								$rd['birthday'] = $value_birthday;
@@ -2754,6 +2754,7 @@ class Hr_profile extends AdminController {
 						$total_row_success = $total_row_success;
 						$dataerror = '';
 						$message = 'Not enought rows for importing';
+
 						if ($total_row_false != 0) {
 							$filename = 'Import_employee_error_' . get_staff_user_id() . '_' . strtotime(date('Y-m-d H:i:s')) . '.xlsx';
 							$writer->writeToFile(str_replace($filename, HR_PROFILE_ERROR . $filename, $filename));
@@ -7482,7 +7483,6 @@ class Hr_profile extends AdminController {
 			'staffid',
 			'staff_identifi', //*
 			'firstname', //*
-			'middlename', //*
 			'lastname', //*
 			'sex',
 			'birthday',
@@ -7520,7 +7520,6 @@ class Hr_profile extends AdminController {
 			'id',
 			'hr_staff_code', //*
 			'hr_firstname', //*
-			'hr_middlename', //*
 			'hr_lastname', //*
 			'hr_sex',
 			'hr_hr_birthday',
@@ -7573,7 +7572,7 @@ class Hr_profile extends AdminController {
 		$style1 = ['widths' => $widths, 'fill' => '#fc2d42', 'font-style' => 'bold', 'color' => '#0a0a0a', 'border' => 'left,right,top,bottom', 'border-color' => '#0a0a0a', 'font-size' => 13];
 
 		//red: required
-		$col_style2 = [2, 4, 7, 10, 11];
+		$col_style2 = [2, 3, 6, 9, 10];
 		$style2 = ['widths' => $widths, 'fill' => '#ff9800', 'font-style' => 'bold', 'color' => '#0a0a0a', 'border' => 'left,right,top,bottom', 'border-color' => '#0a0a0a', 'font-size' => 13];
 
 		//otherwise blue: can be update
@@ -7904,15 +7903,21 @@ class Hr_profile extends AdminController {
 		}
 		redirect(admin_url('hr_profile/setting?group=contract_template'));
 	}
-	 
+
 	public function emp_email_send() 
 	{
+		// $this->db->where("staffid","2");
 		$rest = $this->db->get(db_prefix() . 'staff')->result_array();
-		$data = $rest[1];
-		$staffid = $rest[1]['id'];
-		$original_password = 'Marx123!';
-		send_mail_template('staff_created', $data['email'], $staffid, $original_password);
-		echo"<pre>"; print_R(error_get_last()); die;
+		
+		foreach($rest as $val)
+		{
+			$staffid = $val['staffid'];
+			$original_password = 'Marx123!';
+			send_mail_template('staff_created', $val['email'], $staffid, $original_password);
+		}
+		
 	}
+
+
 //end file
 }

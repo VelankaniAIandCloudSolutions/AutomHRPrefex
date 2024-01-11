@@ -6,8 +6,8 @@ var position_training_id = {};
 	window.addEventListener('load',function(){
 		appValidateForm($("body").find('.job_position_training_add_edit'), {
 			training_type: 'required',
-			'position_training_id[]': 'required',
-			mint_point: 'required',
+			// 'position_training_id[]': 'required',
+			// mint_point: 'required',
 			training_name: 'required',
 		});
 

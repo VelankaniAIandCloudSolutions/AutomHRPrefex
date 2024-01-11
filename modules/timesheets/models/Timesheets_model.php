@@ -5556,9 +5556,11 @@ class timesheets_model extends app_model {
 		}
 
 		$break_time = 0;
-		
+
 		$break_time = $this->break_time_calculate($date, $staff_id); // return time in minutes
 		$total_work_hours = $total_work_hours - ($break_time / 60); 
+
+
 		$data_ts = $this->get_ts_staff($staff_id, $date, 'W');
 		if ($total_work_hours > 0) {
 			if ($data_ts) {
@@ -6674,7 +6676,7 @@ class timesheets_model extends app_model {
 			foreach ($list_date as $key => $value) {
 				
 				$break_time = $this->break_time_calculate($value, $s['staffid']);
-				
+
 				$date_s = date('D d', strtotime($value));
 				$max_hour = $this->get_hour_shift_staff($s['staffid'], $value);
 				$check_holiday = $this->check_holiday($s['staffid'], $value);
@@ -6690,7 +6692,6 @@ class timesheets_model extends app_model {
 							$total_lack = rtrim($total_lack, '; ');
 						}
 						$result_lack = $this->merge_ts($total_lack, $max_hour, $type_valid);
-
 					} else {
 						if ($check_holiday->off_type == 'holiday') {
 							$result_lack = "HO";
@@ -6705,7 +6706,9 @@ class timesheets_model extends app_model {
 				} else {
 					$result_lack = 'NS';
 				}
-
+				// $dt_ts[$date_s] = $result_lack;
+				// $dt_ts_detail[$value] = $result_lack;
+				
 				if($break_time > 0)
 				{
 					$hours = 0;

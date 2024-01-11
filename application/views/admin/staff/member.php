@@ -248,18 +248,7 @@
                                     </div>
                                 </div>
                                 <?php if (!isset($member) || is_admin() || !is_admin() && $member->admin == 0) { ?>
-                                
-                                    <div class="clearfix form-group"></div>
-                                        <label for="timesheet_filling_format"><?php echo _l('timesheet_filling_format'); ?></label>
-                                        <div class="select-placeholder">
-                                            <select name="timesheet_range" id="timesheet_range" class="selectpicker" data-width="100%">
-                                                <option value="weekly" <?php if($member->timesheet_range === 'weekly'){echo"selected";}?>> <?php echo _l("1week");?> </option>
-                                                <option value="biweekly" <?php if($member->timesheet_range === 'biweekly'){echo"selected";}?>> <?php echo _l("2week");?> </option>
-                                                <option value="month" <?php if($member->timesheet_range === 'month'){echo"selected";}?>> <?php echo _l("1month");?> </option>
-                                            </select>
-                                    </div>
-                                
-                                    <!-- fake fields are a workaround for chrome autofill getting the wrong fields -->
+                                <!-- fake fields are a workaround for chrome autofill getting the wrong fields -->
                                 <input type="text" class="fake-autofill-field" name="fakeusernameremembered" value=''
                                     tabindex="-1" />
                                 <input type="password" class="fake-autofill-field" name="fakepasswordremembered"
