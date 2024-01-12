@@ -205,3 +205,8 @@ define('LIBSPATH', APPPATH . 'libraries/');
 
 // Parse Resume API
 define('PARSE_RESUME', 'https://parser.automhr.com/api/v1/file_upload_view');
+
+/**
+ * Expenses receipts
+ */
+define('PROJECT_ATTENDANCE_ATTACHMENTS_FOLDER', FCPATH . 'uploads/attendance' . '/');

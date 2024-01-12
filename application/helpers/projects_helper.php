@@ -75,6 +75,14 @@ function app_init_project_tabs()
         'position'                  => 25,
         'linked_to_customer_option' => ['upload_files'],
     ]);
+    
+    $CI->app_tabs->add_project_tab('attendance_files', [
+        'name'                      => _l('attendance_files'),
+        'icon'                      => 'fa-solid fa-file',
+        'view'                      => 'admin/projects/attendance_files',
+        'position'                  => 25,
+        'linked_to_customer_option' => ['upload_files'],
+    ]);
 
     $CI->app_tabs->add_project_tab('project_discussions', [
         'name'                      => _l('project_discussions'),

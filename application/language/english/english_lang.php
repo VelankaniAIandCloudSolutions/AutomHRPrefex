@@ -3924,3 +3924,7 @@ $lang['break_out']											= "Break End";
 $lang['break_out_at']										= "Break End At";
 $lang['break_in_out']										= "Break In/Out Time";
 
+$lang['attendance_files']                                   = 'Attendance Files';
+
+$lang['attendance_start_date']                                  = 'Start Date';
+$lang['attendance_end_date']                                  = 'End Date';

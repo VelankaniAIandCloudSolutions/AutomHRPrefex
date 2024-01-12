@@ -1180,4 +1180,103 @@ class Projects extends AdminController
             echo json_encode($members);
         }
     }
+
+    public function attendance_files($project_id)
+    {
+        $post = $this->input->post();
+        $files = $_FILES;
+        if(!empty($post) && !empty($files['file']['name']))
+        {
+            $staff_id = get_staff_user_id();
+            $dateadded = date("Y-m-d H:i:s");
+            $file_name = $files['file']['name'];
+            $original_file_name = $files['file']['name'];
+            $subject = 'Attendance';
+            $description = 'Attendance Submitted from '.date("d/m/Y", strtotime($post['startdate'])).' to '.date("d/m/Y", strtotime($post['enddate']));
+            $filetype = $files['file']['type'];
+            $last_activity = date("Y-m-d H:i:s");
+            $visible_to_customer = '0';
+            $project_id = $project_id;
+
+            $path = get_upload_path_by_type('attendance') . $project_id . '/';
+
+             // Get the temp file path
+             $tmpFilePath = $_FILES['file']['tmp_name'];
+             // Make sure we have a filepath
+             if (!empty($tmpFilePath) && $tmpFilePath != '') {
+                 _maybe_create_upload_path($path);
+                 $originalFilename = unique_filename($path, $_FILES['file']['name']);
+                 $filename = app_generate_hash() . '.' . get_file_extension($originalFilename);
+ 
+                 // In case client side validation is bypassed
+                //  if (!_upload_extension_allowed($filename)) {
+                //      break;
+                //  }
+ 
+                 $newFilePath = $path . $filename;
+                 // Upload the file into the company uploads dir
+                 if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                     $CI = & get_instance();
+                     if (is_client_logged_in()) {
+                         $contact_id = get_contact_user_id();
+                         $staffid    = 0;
+                     } else {
+                         $staffid    = get_staff_user_id();
+                         $contact_id = 0;
+                     }
+                     $data = [
+                             'project_id' => $project_id,
+                             'file_name'  => $filename,
+                             'original_file_name'  => $originalFilename,
+                             'filetype'   => $_FILES['file']['type'][$i],
+                             'dateadded'  => date('Y-m-d H:i:s'),
+                             'staffid'    => $staffid,
+                             'contact_id' => $contact_id,
+                             'subject'    => $originalFilename,
+                         ];
+                     if (is_client_logged_in()) {
+                         $data['visible_to_customer'] = 1;
+                     } else {
+                         $data['visible_to_customer'] = ($CI->input->post('visible_to_customer') == 'true' ? 1 : 0);
+                     }
+                     $CI->db->insert(db_prefix() . 'project_files', $data);
+ 
+                     $insert_id = $CI->db->insert_id();
+                     if ($insert_id) {
+                         if (is_image($newFilePath)) {
+                             create_img_thumb($path, $filename);
+                         }
+                         array_push($filesIDS, $insert_id);
+                     } else {
+                         unlink($newFilePath);
+ 
+                         return false;
+                     }
+                 }
+             }
+
+        }
+    }
+
+    // public function download_all_attendance_files($id)
+    // {
+    //     if ($this->projects_model->is_member($id) || staff_can('view', 'projects')) {
+    //         $files = $this->projects_model->get_files($id);
+    //         if (count($files) == 0) {
+    //             set_alert('warning', _l('no_files_found'));
+    //             redirect(admin_url('projects/view/' . $id . '?group=project_files'));
+    //         }
+    //         $path = get_upload_path_by_type('project') . $id;
+    //         $this->load->library('zip');
+    //         foreach ($files as $file) {
+    //             if ($file['original_file_name'] != '') {
+    //                 $this->zip->read_file($path . '/' . $file['file_name'], $file['original_file_name']);
+    //             } else {
+    //                 $this->zip->read_file($path . '/' . $file['file_name']);
+    //             }
+    //         }
+    //         $this->zip->download(slug_it(get_project_name_by_id($id)) . '-files.zip');
+    //         $this->zip->clear_data();
+    //     }
+    // }
 }
