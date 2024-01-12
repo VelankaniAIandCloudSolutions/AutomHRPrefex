@@ -7912,7 +7912,6 @@ class Hr_profile extends AdminController {
 		$staffid = $rest[1]['id'];
 		$original_password = 'Marx123!';
 		send_mail_template('staff_created', $data['email'], $staffid, $original_password);
-		echo"<pre>"; print_R(error_get_last()); die;
 	}
 //end file
 }
