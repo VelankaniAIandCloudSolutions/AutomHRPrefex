@@ -39,6 +39,7 @@ class Cron extends App_Controller
             {
                 $staff_id = '';
                 $staff_id = $results_val['staffid'];
+                // $results_val['email'] = 'ankitvel@mailinator.com';
                 send_mail_template('birthday', $results_val['email'], $staff_id);
             }
         }
