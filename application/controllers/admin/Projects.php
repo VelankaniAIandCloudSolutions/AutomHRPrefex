@@ -305,7 +305,11 @@ class Projects extends AdminController
                 $data['milestones_found'] = $data['total_milestones'] > 0 || (!$data['total_milestones'] && total_rows(db_prefix() . 'tasks', ['rel_id' => $id, 'rel_type' => 'project', 'milestone' => 0]) > 0);
             } elseif ($group == 'project_files') {
                 $data['files'] = $this->projects_model->get_files($id);
-            } elseif ($group == 'project_expenses') {
+            }
+            elseif ($group == 'attendance_files') {
+                $data['files'] = $this->projects_model->get_all_attendance_files($id);
+            }
+             elseif ($group == 'project_expenses') {
                 $this->load->model('taxes_model');
                 $this->load->model('expenses_model');
                 $data['taxes']              = $this->taxes_model->get();
@@ -1178,6 +1182,141 @@ class Projects extends AdminController
             }, $members);
 
             echo json_encode($members);
+        }
+    }
+
+    public function attendance_files($project_id)
+    {
+        $post = $this->input->post();
+        $files = $_FILES;
+        if(!empty($post) && !empty($files['file']['name']))
+        {
+            $staff_id = get_staff_user_id();
+            $dateadded = date("Y-m-d H:i:s");
+            $file_name = $files['file']['name'];
+            $original_file_name = $files['file']['name'];
+            $subject = 'Attendance';
+            $description = 'Attendance Submitted from '.date("d/m/Y", strtotime($post['startdate'])).' to '.date("d/m/Y", strtotime($post['enddate']));
+            $filetype = $files['file']['type'];
+            $last_activity = date("Y-m-d H:i:s");
+            $visible_to_customer = '0';
+            $project_id = $project_id;
+
+            $path = get_upload_path_by_type('attendance') . $project_id . '/';
+
+             // Get the temp file path
+             $tmpFilePath = $_FILES['file']['tmp_name'];
+             // Make sure we have a filepath
+             if (!empty($tmpFilePath) && $tmpFilePath != '') {
+                 _maybe_create_upload_path($path);
+                 $originalFilename = unique_filename($path, $_FILES['file']['name']);
+                 $filename = app_generate_hash() . '.' . get_file_extension($originalFilename);
+ 
+                 // In case client side validation is bypassed
+                //  if (!_upload_extension_allowed($filename)) {
+                //      break;
+                //  }
+ 
+                 $newFilePath = $path . $filename;
+                 // Upload the file into the company uploads dir
+                 if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                     $CI = & get_instance();
+                     if (is_client_logged_in()) {
+                         $contact_id = get_contact_user_id();
+                         $staffid    = 0;
+                     } else {
+                         $staffid    = get_staff_user_id();
+                         $contact_id = 0;
+                     }
+                     $data = [
+                             'project_id' => $project_id,
+                             'file_name'  => $filename,
+                             'original_file_name'  => $originalFilename,
+                             'filetype'   => $_FILES['file']['type'],
+                             'dateadded'  => date('Y-m-d H:i:s'),
+                             'staffid'    => $staffid,
+                             'contact_id' => $contact_id,
+                             'subject'    => $originalFilename,
+                         ];
+                     if (is_client_logged_in()) {
+                         $data['visible_to_customer'] = 1;
+                     } else {
+                         $data['visible_to_customer'] = ($CI->input->post('visible_to_customer') == 'true' ? 1 : 0);
+                     }
+                     $CI->db->insert(db_prefix() . 'attendance_sheet_files', $data);
+ 
+                     $insert_id = $CI->db->insert_id();
+                     if ($insert_id) {
+                         if (is_image($newFilePath)) {
+                             create_img_thumb($path, $filename);
+                         }
+                         array_push($filesIDS, $insert_id);
+                     } else {
+                         unlink($newFilePath);
+                         return false;
+                     }
+                 }
+             }
+        }
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    public function download_all_attendance_files($id)
+    {
+        if ($this->projects_model->is_member($id) || staff_can('view', 'projects')) {
+            $files = $this->projects_model->get_all_attendance_files($id);
+            if (count($files) == 0) {
+                set_alert('warning', _l('no_files_found'));
+                redirect(admin_url('projects/view/' . $id . '?group=attendance_files'));
+            }
+            $path = get_upload_path_by_type('attendance') . $id;
+            
+            $this->load->library('zip');
+            foreach ($files as $file) {
+                if ($file['original_file_name'] != '') {
+                    $this->zip->read_file($path . '/' . $file['file_name'], $file['original_file_name']);
+                } else {
+                    $this->zip->read_file($path . '/' . $file['file_name']);
+                }
+            }
+            $this->zip->download(slug_it(get_project_name_by_id($id)) . '-files.zip');
+            $this->zip->clear_data();
+        }
+    }
+
+    public function bulk_action_attendance_files()
+    {
+        hooks()->do_action('before_do_bulk_action_for_project_files');
+        $total_deleted       = 0;
+        $hasPermissionDelete = staff_can('delete', 'projects');
+        // bulk action for projects currently only have delete button
+        if ($this->input->post()) {
+            $fVisibility = $this->input->post('visible_to_customer') == 'true' ? 1 : 0;
+            $ids         = $this->input->post('ids');
+            if (is_array($ids)) {
+                foreach ($ids as $id) {
+                    if ($hasPermissionDelete && $this->input->post('mass_delete') && $this->projects_model->remove_attendace_file($id)) {
+                        $total_deleted++;
+                    } else {
+                        $this->projects_model->change_attendance_file_visibility($id, $fVisibility);
+                    }
+                }
+            }
+        }
+        if ($this->input->post('mass_delete')) {
+            set_alert('success', _l('total_files_deleted', $total_deleted));
+        }
+    }
+    public function remove_attendance_file($project_id, $id)
+    {
+        $this->projects_model->remove_attendance_file($id);
+        redirect(admin_url('projects/view/' . $project_id . '?group=attendance_files'));
+    }
+
+    public function change_attendance_file_visibility($id, $visible)
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->projects_model->change_attendance_file_visibility($id, $visible);
         }
     }
 }

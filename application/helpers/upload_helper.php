@@ -1145,6 +1145,10 @@ function get_upload_path_by_type($type)
         $path = NEWSFEED_FOLDER;
 
         break;
+
+        case 'attendance':
+            $path = PROJECT_ATTENDANCE_ATTACHMENTS_FOLDER;
+        break;
     }
 
     return hooks()->apply_filters('get_upload_path_by_type', $path, $type);

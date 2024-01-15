@@ -3883,9 +3883,50 @@ $lang['payment_attempt_fee']                                = 'Payment Fee';
 $lang['feature']                                            = 'Feature';
 $lang['capabilities']                                       = 'Capabilities';
 
+$lang['resume_parse']                                       = 'Parse Resume';
+$lang['file_upload']                                        = 'Please update file extention doc, docx, pdf';
+$lang['parse_resume_file_error']                            = "Please upload correct file.";
+$lang['no_data_found']                                      = "No data available.";
+$lang['resume_downlaod']                                    = "Resume Download";
+$lang['reporting_to']                                       = 'Reporting To';
+$lang['send_to_reporting_manager']                          = 'Send for Approval to Reporting Manager';
+$lang['approval']                                           = 'Approval';
+$lang['activity_not_recorded']                              = 'Selected time range activity not recorded';
+$lang['timesheet_send_to_reporting_manager']                = 'Time sheet sent for reporting manager';
+$lang['timesheet_activity_exist']                           = 'Selected timesheet period already exist';
+$lang['client_not_selected']                                = 'Please select Correct Client.';
+$lang['project_not_selected']                               = 'Please select Correct Projects.';
+$lang["timesheet_filling_format"]                           = 'Timesheet Period';
+$lang["1week"]                                              = '1 Week';
+$lang["2week"]                                              = '2 Week';
+$lang["1month"]                                             = '1 Month';
+$lang['send_for_approval']                                  = 'Send for Approval';
+$lang['timesheet_start_date']                               = 'Start Date';
+$lang['timesheet_to_date']                                  = 'To Date';
+$lang['total_pending_timesheet']                            = 'Pending for Approvals Timesheets';
+$lang['total_approved_timesheet']                           = 'Approved Time Sheets';
+$lang['reporting_manager_not_selected']                     = 'Please select Reporting Manager';
+$lang['timesheet_approval_list']                            = 'Timesheet Approval List';
+$lang['timesheet_approval_reject']                          = 'Timesheet Approve/Reject';
+$lang['pending']                                            = 'Pending';
+$lang['rejected']                                           = 'Rejected';
+$lang['approved']                                           = 'Approved';
+$lang['all']                                                = 'All';
+$lang['sno']                                                = 'S.No.';
+$lang['timesheet_status']                                   = 'Timesheet Status';
+$lang['time_tracking']                                      = 'Task Tracking Time';
+$lang['rejecte']                                            = 'Rejecte';
+$lang['approve']                                            = 'Approve';
 
 $lang['break_in']											= "Break Start";
 $lang['break_in_at']										= "Break Start At";
 $lang['break_out']											= "Break End";
 $lang['break_out_at']										= "Break End At";
 $lang['break_in_out']										= "Break In/Out Time";
+
+$lang['attendance_files']                                   = 'Attendance Files';
+
+$lang['attendance_start_date']                              = 'Start Date';
+$lang['attendance_end_date']                                = 'End Date';
+
+$lang['project_activity_project_attendance_file_removed']   = 'Removed project attendance file';
