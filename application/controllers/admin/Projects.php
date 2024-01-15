@@ -1264,12 +1264,13 @@ class Projects extends AdminController
     public function download_all_attendance_files($id)
     {
         if ($this->projects_model->is_member($id) || staff_can('view', 'projects')) {
-            $files = $this->projects_model->get_files($id);
+            $files = $this->projects_model->get_all_attendance_files($id);
             if (count($files) == 0) {
                 set_alert('warning', _l('no_files_found'));
-                redirect(admin_url('projects/view/' . $id . '?group=project_files'));
+                redirect(admin_url('projects/view/' . $id . '?group=attendance_files'));
             }
-            $path = get_upload_path_by_type('project') . $id;
+            $path = get_upload_path_by_type('attendance') . $id;
+            
             $this->load->library('zip');
             foreach ($files as $file) {
                 if ($file['original_file_name'] != '') {
@@ -1280,6 +1281,42 @@ class Projects extends AdminController
             }
             $this->zip->download(slug_it(get_project_name_by_id($id)) . '-files.zip');
             $this->zip->clear_data();
+        }
+    }
+
+    public function bulk_action_attendance_files()
+    {
+        hooks()->do_action('before_do_bulk_action_for_project_files');
+        $total_deleted       = 0;
+        $hasPermissionDelete = staff_can('delete', 'projects');
+        // bulk action for projects currently only have delete button
+        if ($this->input->post()) {
+            $fVisibility = $this->input->post('visible_to_customer') == 'true' ? 1 : 0;
+            $ids         = $this->input->post('ids');
+            if (is_array($ids)) {
+                foreach ($ids as $id) {
+                    if ($hasPermissionDelete && $this->input->post('mass_delete') && $this->projects_model->remove_attendace_file($id)) {
+                        $total_deleted++;
+                    } else {
+                        $this->projects_model->change_attendance_file_visibility($id, $fVisibility);
+                    }
+                }
+            }
+        }
+        if ($this->input->post('mass_delete')) {
+            set_alert('success', _l('total_files_deleted', $total_deleted));
+        }
+    }
+    public function remove_attendance_file($project_id, $id)
+    {
+        $this->projects_model->remove_attendance_file($id);
+        redirect(admin_url('projects/view/' . $project_id . '?group=attendance_files'));
+    }
+
+    public function change_attendance_file_visibility($id, $visible)
+    {
+        if ($this->input->is_ajax_request()) {
+            $this->projects_model->change_attendance_file_visibility($id, $visible);
         }
     }
 }

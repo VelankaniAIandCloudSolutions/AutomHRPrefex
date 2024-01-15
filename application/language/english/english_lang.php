@@ -3915,8 +3915,8 @@ $lang['all']                                                = 'All';
 $lang['sno']                                                = 'S.No.';
 $lang['timesheet_status']                                   = 'Timesheet Status';
 $lang['time_tracking']                                      = 'Task Tracking Time';
-$lang['rejecte']                                           = 'Rejecte';
-$lang['approve']                                           = 'Approve';
+$lang['rejecte']                                            = 'Rejecte';
+$lang['approve']                                            = 'Approve';
 
 $lang['break_in']											= "Break Start";
 $lang['break_in_at']										= "Break Start At";
@@ -3926,5 +3926,7 @@ $lang['break_in_out']										= "Break In/Out Time";
 
 $lang['attendance_files']                                   = 'Attendance Files';
 
-$lang['attendance_start_date']                                  = 'Start Date';
-$lang['attendance_end_date']                                  = 'End Date';
+$lang['attendance_start_date']                              = 'Start Date';
+$lang['attendance_end_date']                                = 'End Date';
+
+$lang['project_activity_project_attendance_file_removed']   = 'Removed project attendance file';

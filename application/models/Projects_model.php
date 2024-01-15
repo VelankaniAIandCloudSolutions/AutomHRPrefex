@@ -2648,4 +2648,109 @@ class Projects_model extends App_Model
 
         return $this->db->get(db_prefix() . 'attendance_sheet_files')->result_array();
     }
+
+    public function remove_attendace_file($id, $logActivity = true)
+    {
+        //hooks()->do_action('before_remove_project_file', $id);
+
+        $this->db->where('id', $id);
+        $file = $this->db->get(db_prefix() . 'attendance_sheet_files')->row();
+        if ($file) {
+            if (empty($file->external)) {
+                $path     = get_upload_path_by_type('attendance') . $file->project_id . '/';
+                $fullPath = $path . $file->file_name;
+               
+                if (file_exists($fullPath)) {
+                    unlink($fullPath);
+                    $fname     = pathinfo($fullPath, PATHINFO_FILENAME);
+                    $fext      = pathinfo($fullPath, PATHINFO_EXTENSION);
+                    $thumbPath = $path . $fname . '_thumb.' . $fext;
+
+                    if (file_exists($thumbPath)) {
+                        unlink($thumbPath);
+                    }
+                }
+            }
+
+            $this->db->where('id', $id);
+            $this->db->delete(db_prefix() . 'attendance_sheet_files');
+            if ($logActivity) {
+                $this->log_activity($file->project_id, 'project_activity_project_attendance_file_removed', $file->file_name, $file->visible_to_customer);
+            }
+
+            // Delete discussion comments
+            $this->_delete_discussion_comments($id, 'file');
+
+            if (is_dir(get_upload_path_by_type('attendance') . $file->project_id)) {
+                // Check if no attachments left, so we can delete the folder also
+                $other_attachments = list_files(get_upload_path_by_type('attendance') . $file->project_id);
+                if (count($other_attachments) == 0) {
+                    delete_dir(get_upload_path_by_type('attendance') . $file->project_id);
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+
+    public function change_attendance_file_visibility($id, $visible)
+    {
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'attendance_sheet_files', [
+            'visible_to_customer' => $visible,
+        ]);
+
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'project_activity', [
+            'visible_to_customer' => $visible,
+        ]);
+    }
+
+    public function remove_attendance_file($id, $logActivity = true)
+    {
+        hooks()->do_action('before_remove_project_file', $id);
+
+        $this->db->where('id', $id);
+        $file = $this->db->get(db_prefix() . 'attendance_sheet_files')->row();
+        if ($file) {
+            if (empty($file->external)) {
+                $path     = get_upload_path_by_type('attendance') . $file->project_id . '/';
+                $fullPath = $path . $file->file_name;
+                if (file_exists($fullPath)) {
+                    unlink($fullPath);
+                    $fname     = pathinfo($fullPath, PATHINFO_FILENAME);
+                    $fext      = pathinfo($fullPath, PATHINFO_EXTENSION);
+                    $thumbPath = $path . $fname . '_thumb.' . $fext;
+
+                    if (file_exists($thumbPath)) {
+                        unlink($thumbPath);
+                    }
+                }
+            }
+
+            $this->db->where('id', $id);
+            $this->db->delete(db_prefix() . 'attendance_sheet_files');
+            if ($logActivity) {
+                $this->log_activity($file->project_id, 'project_activity_project_attendance_file_removed', $file->file_name, $file->visible_to_customer);
+            }
+
+            // Delete discussion comments
+            $this->_delete_discussion_comments($id, 'file');
+
+            if (is_dir(get_upload_path_by_type('attendance') . $file->project_id)) {
+                // Check if no attachments left, so we can delete the folder also
+                $other_attachments = list_files(get_upload_path_by_type('attendance') . $file->project_id);
+                if (count($other_attachments) == 0) {
+                    delete_dir(get_upload_path_by_type('attendance') . $file->project_id);
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 }

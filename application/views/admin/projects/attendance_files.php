@@ -56,7 +56,7 @@
 
 
 <div class="mtop20"></div>
-<div class="modal fade bulk_actions" id="project_files_bulk_actions" tabindex="-1" role="dialog">
+<div class="modal fade bulk_actions" id="attendance_files_bulk_actions" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -86,23 +86,23 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo _l('close'); ?></button>
                 <a href="#" class="btn btn-primary"
-                    onclick="project_files_bulk_action(this); return false;"><?php echo _l('confirm'); ?></a>
+                    onclick="attendance_files_bulk_action(this); return false;"><?php echo _l('confirm'); ?></a>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-<a href="#" data-toggle="modal" data-target="#project_files_bulk_actions" class="bulk-actions-btn table-btn hide"
-    data-table=".table-project-files">
+<a href="#" data-toggle="modal" data-target="#attendance_files_bulk_actions" class="bulk-actions-btn table-btn hide"
+    data-table=".table-attendance-files">
     <?php echo _l('bulk_actions'); ?>
 </a>
 
 <a href="#"
     onclick="window.location.href = '<?php echo admin_url('projects/download_all_attendance_files/' . $project->id); ?>'; return false;"
-    class="table-btn hide" data-table=".table-project-files"><?php echo _l('download_all'); ?></a>
+    class="table-btn hide" data-table=".table-attendance-files"><?php echo _l('download_all'); ?></a>
 <div class="clearfix"></div>
 <div class="panel_s panel-table-full">
     <div class="panel-body">
-        <table class="table dt-table table-project-files" data-order-col="7" data-order-type="desc">
+        <table class="table dt-table table-attendance-files" data-order-col="7" data-order-type="desc">
             <thead>
                 <tr>
                     <th data-orderable="false"><span class="hide"> - </span>
@@ -161,12 +161,11 @@
     } ?>
                         <div class="onoffswitch">
                             <input type="checkbox"
-                                data-switch-url="<?php echo admin_url(); ?>projects/change_file_visibility"
+                                data-switch-url="<?php echo admin_url(); ?>projects/change_attendance_file_visibility"
                                 id="<?php echo $file['id']; ?>" data-id="<?php echo $file['id']; ?>"
                                 class="onoffswitch-checkbox" value="<?php echo $file['id']; ?>" <?php echo $checked; ?>>
                             <label class="onoffswitch-label" for="<?php echo $file['id']; ?>"></label>
                         </div>
-
                     </td>
                     <td>
                         <?php if ($file['staffid'] != 0) {
@@ -196,7 +195,7 @@
                             <?php
     } ?>
                             <?php if ($file['staffid'] == get_staff_user_id() || has_permission('projects', '', 'delete')) { ?>
-                            <a href="<?php echo admin_url('projects/remove_file/' . $project->id . '/' . $file['id']); ?>"
+                            <a href="<?php echo admin_url('projects/remove_attendance_file/' . $project->id . '/' . $file['id']); ?>"
                                 class="tw-mt-px tw-text-neutral-500 hover:tw-text-neutral-700 focus:tw-text-neutral-700 _delete">
                                 <i class="fa-regular fa-trash-can fa-lg"></i>
                             </a>

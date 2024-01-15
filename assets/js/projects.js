@@ -946,3 +946,37 @@ function _maybe_remove_task_from_project_milestone(task_id) {
     }
   }
 }
+
+
+
+function attendance_files_bulk_action(e) {
+  if (confirm_delete()) {
+    var mass_delete = $("#mass_delete").prop("checked");
+    var ids = [];
+    var data = {};
+    if (mass_delete == false || typeof mass_delete == "undefined") {
+      data.visible_to_customer = $("#bulk_pf_visible_to_customer").prop(
+        "checked"
+      );
+    } else {
+      data.mass_delete = true;
+    }
+
+    var rows = $(".table-attendance-files").find("tbody tr");
+    $.each(rows, function () {
+      var checkbox = $($(this).find("td").eq(0)).find("input");
+      if (checkbox.prop("checked") == true) {
+        ids.push(checkbox.val());
+      }
+    });
+
+    data.ids = ids;
+    $(e).addClass("disabled");
+
+    setTimeout(function () {
+      $.post(admin_url + "projects/bulk_action_attendance_files", data).done(function () {
+        window.location.reload();
+      });
+    }, 200);
+  }
+}
