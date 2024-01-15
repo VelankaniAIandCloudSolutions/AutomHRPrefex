@@ -305,7 +305,11 @@ class Projects extends AdminController
                 $data['milestones_found'] = $data['total_milestones'] > 0 || (!$data['total_milestones'] && total_rows(db_prefix() . 'tasks', ['rel_id' => $id, 'rel_type' => 'project', 'milestone' => 0]) > 0);
             } elseif ($group == 'project_files') {
                 $data['files'] = $this->projects_model->get_files($id);
-            } elseif ($group == 'project_expenses') {
+            }
+            elseif ($group == 'attendance_files') {
+                $data['files'] = $this->projects_model->get_all_attendance_files($id);
+            }
+             elseif ($group == 'project_expenses') {
                 $this->load->model('taxes_model');
                 $this->load->model('expenses_model');
                 $data['taxes']              = $this->taxes_model->get();
@@ -1228,7 +1232,7 @@ class Projects extends AdminController
                              'project_id' => $project_id,
                              'file_name'  => $filename,
                              'original_file_name'  => $originalFilename,
-                             'filetype'   => $_FILES['file']['type'][$i],
+                             'filetype'   => $_FILES['file']['type'],
                              'dateadded'  => date('Y-m-d H:i:s'),
                              'staffid'    => $staffid,
                              'contact_id' => $contact_id,
@@ -1239,7 +1243,7 @@ class Projects extends AdminController
                      } else {
                          $data['visible_to_customer'] = ($CI->input->post('visible_to_customer') == 'true' ? 1 : 0);
                      }
-                     $CI->db->insert(db_prefix() . 'project_files', $data);
+                     $CI->db->insert(db_prefix() . 'attendance_sheet_files', $data);
  
                      $insert_id = $CI->db->insert_id();
                      if ($insert_id) {
@@ -1249,34 +1253,33 @@ class Projects extends AdminController
                          array_push($filesIDS, $insert_id);
                      } else {
                          unlink($newFilePath);
- 
                          return false;
                      }
                  }
              }
-
         }
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
-    // public function download_all_attendance_files($id)
-    // {
-    //     if ($this->projects_model->is_member($id) || staff_can('view', 'projects')) {
-    //         $files = $this->projects_model->get_files($id);
-    //         if (count($files) == 0) {
-    //             set_alert('warning', _l('no_files_found'));
-    //             redirect(admin_url('projects/view/' . $id . '?group=project_files'));
-    //         }
-    //         $path = get_upload_path_by_type('project') . $id;
-    //         $this->load->library('zip');
-    //         foreach ($files as $file) {
-    //             if ($file['original_file_name'] != '') {
-    //                 $this->zip->read_file($path . '/' . $file['file_name'], $file['original_file_name']);
-    //             } else {
-    //                 $this->zip->read_file($path . '/' . $file['file_name']);
-    //             }
-    //         }
-    //         $this->zip->download(slug_it(get_project_name_by_id($id)) . '-files.zip');
-    //         $this->zip->clear_data();
-    //     }
-    // }
+    public function download_all_attendance_files($id)
+    {
+        if ($this->projects_model->is_member($id) || staff_can('view', 'projects')) {
+            $files = $this->projects_model->get_files($id);
+            if (count($files) == 0) {
+                set_alert('warning', _l('no_files_found'));
+                redirect(admin_url('projects/view/' . $id . '?group=project_files'));
+            }
+            $path = get_upload_path_by_type('project') . $id;
+            $this->load->library('zip');
+            foreach ($files as $file) {
+                if ($file['original_file_name'] != '') {
+                    $this->zip->read_file($path . '/' . $file['file_name'], $file['original_file_name']);
+                } else {
+                    $this->zip->read_file($path . '/' . $file['file_name']);
+                }
+            }
+            $this->zip->download(slug_it(get_project_name_by_id($id)) . '-files.zip');
+            $this->zip->clear_data();
+        }
+    }
 }

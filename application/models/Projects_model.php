@@ -2638,4 +2638,14 @@ class Projects_model extends App_Model
             ->excludeMilestonesFromCustomer(isset($type_where['hide_from_customer']) && $type_where['hide_from_customer'] == 1)
             ->get();
     }
+
+    public function get_all_attendance_files($project_id)
+    {
+        if (is_client_logged_in()) {
+            $this->db->where('visible_to_customer', 1);
+        }
+        $this->db->where('project_id', $project_id);
+
+        return $this->db->get(db_prefix() . 'attendance_sheet_files')->result_array();
+    }
 }
