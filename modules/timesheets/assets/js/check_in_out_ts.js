@@ -165,6 +165,9 @@ function get_route_point(){
       $('.route_point_combobox').removeClass('hide');
       $('select[name="route_point"]').html(response.option).selectpicker('refresh');
     }
+    $('.total_hours').html('');
+    $('.total_hours').html(response.total_hours);
+
   });
 }
 }

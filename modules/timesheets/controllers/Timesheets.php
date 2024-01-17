@@ -5592,9 +5592,15 @@ public function check_in_ts() {
 				}
 			}
 		}
+
+		$data_check_in_out = $this->timesheets_model->get_list_check_in_out(date('Y-m-d'), get_staff_user_id());
+		$totalWorkHours = 0;
+		$totalWorkHours = $this->calculateTotalWorkHours($data_check_in_out);
+
 		echo json_encode([
 			'point_id' => $point_id,
 			'option' => $list_option,
+			"total_hours"	=> $totalWorkHours." Hours"
 		]);
 		die;
 	}
