@@ -1,0 +1,169 @@
+2024-01-17 17:31:54 | To:velankit@mailinator.com| Status: Sent
+2024-01-17 17:36:31 | To:velankit@mailinator.com| Status: Failed 
+ | Erros: The following SMTP error was encountered: 0 php_network_getaddresses: getaddrinfo failed: No such host is known. <br />Unable to send email using PHP SMTP. Your server might not be configured to send mail using this method.<br /><pre>Date: Wed, 17 Jan 2024 17:36:31 +0530
+From: &quot;Marx HR&quot; &lt;info@automhr.com&gt;
+Return-Path: &lt;&gt;
+Subject: =?UTF-8?Q?Happy=20Birthday=20admin!=20?=
+To: velankit@mailinator.com
+Reply-To: &lt;info@automhr.com&gt;
+User-Agent: codeigniter
+X-Sender: info@automhr.com
+X-Mailer: codeigniter
+X-Priority: 3 (Normal)
+Message-ID: &lt;65a7c2c7973a8&gt;
+Mime-Version: 1.0
+
+
+Content-Type: multipart/alternative; boundary=&quot;B_ALT_65a7c2c7973cf&quot;
+
+This is a multi-part message in MIME format.
+Your email application may not support this format.
+
+--B_ALT_65a7c2c7973cf
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Dear admin,
+
+
+ 
+
+
+Wishing you a day filled with joy, laughter, and all the things that make
+birthdays extra special! 
+
+
+
+
+
+On your birthday, I hope you take a moment to reflect on the incredible
+person you are and the positive impact you've had on those around you. Your
+presence brings so much happiness, and today is all about celebrating you!
+
+
+
+
+
+May the year ahead be filled with exciting adventures, new opportunities,
+and moments of pure bliss. Here's to health, success, and everything your
+heart desires. 
+
+
+
+
+
+As you blow out the candles, remember that your friends and family are
+cheering you on from near and far. May your day be as fantastic as you are!
+
+
+
+
+
+Happy Birthday, admin! 
+
+
+
+
+
+Warmest wishes,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      Marx HR
+
+
+--B_ALT_65a7c2c7973cf
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+&lt;!doctype html&gt;=0A      &lt;html&gt;=0A      &lt;head&gt;=0A      &lt;meta name=3D&quot;viewpor=
+t&quot; content=3D&quot;width=3Ddevice-width&quot; /&gt;=0A      &lt;meta http-equiv=3D&quot;Content-=
+Type&quot; content=3D&quot;text/html; charset=3DUTF-8&quot; /&gt;=0A      &lt;style&gt;=0A      bod=
+y {=0A        background-color: #f6f6f6;=0A        font-family: sans-serif;=
+=0A        -webkit-font-smoothing: antialiased;=0A        font-size: 14px;=
+=0A        line-height: 1.4;=0A        margin: 0;=0A        padding: 0;=0A =
+       -ms-text-size-adjust: 100%;=0A        -webkit-text-size-adjust: 100%=
+;=0A      }=0A      table {=0A        border-collapse: separate;=0A        =
+mso-table-lspace: 0pt;=0A        mso-table-rspace: 0pt;=0A        width: 10=
+0%;=0A      }=0A      table td {=0A        font-family: sans-serif;=0A     =
+   font-size: 14px;=0A        vertical-align: top;=0A      }=0A      /* ---=
+----------------------------------=0A      BODY &amp; CONTAINER=0A      -------=
+------------------------------ */=0A      .body {=0A        background-colo=
+r: #f6f6f6;=0A        width: 100%;=0A      }=0A      /* Set a max-width, an=
+d make it display as block so it will automatically stretch to that width, =
+but will also shrink down on a phone or something */=0A      =0A      .cont=
+ainer {=0A        display: block;=0A        margin: 0 auto !important;=0A  =
+      /* makes it centered */=0A        max-width: 680px;=0A        padding=
+: 10px;=0A        width: 680px;=0A      }=0A      /* This should also be a =
+block element, so that it will fill 100% of the .container */=0A      =0A  =
+    .content {=0A        box-sizing: border-box;=0A        display: block;=
+=0A        margin: 0 auto;=0A        max-width: 680px;=0A        padding: 1=
+0px;=0A      }=0A      /* -------------------------------------=0A      HEA=
+DER, FOOTER, MAIN=0A      ------------------------------------- */=0A      =
+=0A      .main {=0A        background: #fff;=0A        border-radius: 3px;=
+=0A        width: 100%;=0A      }=0A      .wrapper {=0A        box-sizing: =
+border-box;=0A        padding: 20px;=0A      }=0A      .footer {=0A        =
+clear: both;=0A        padding-top: 10px;=0A        text-align: center;=0A =
+       width: 100%;=0A      }=0A      .footer td,=0A      .footer p,=0A    =
+  .footer span,=0A      .footer a {=0A        color: #999999;=0A        fon=
+t-size: 12px;=0A        text-align: center;=0A      }=0A      hr {=0A      =
+  border: 0;=0A        border-bottom: 1px solid #f6f6f6;=0A        margin: =
+20px 0;=0A      }=0A      /* -------------------------------------=0A      =
+RESPONSIVE AND MOBILE FRIENDLY STYLES=0A      -----------------------------=
+-------- */=0A      =0A      @media only screen and (max-width: 620px) {=0A=
+        table[class=3Dbody] .content {=0A          padding: 0 !important;=
+=0A        }=0A        table[class=3Dbody] .container {=0A          padding=
+: 0 !important;=0A          width: 100% !important;=0A        }=0A        t=
+able[class=3Dbody] .main {=0A          border-left-width: 0 !important;=0A =
+         border-radius: 0 !important;=0A          border-right-width: 0 !im=
+portant;=0A        }=0A      }=0A      &lt;/style&gt;=0A      &lt;/head&gt;=0A      &lt;bo=
+dy class=3D&quot;&quot;&gt;=0A      &lt;table border=3D&quot;0&quot; cellpadding=3D&quot;0&quot; cellspacing=3D=
+&quot;0&quot; class=3D&quot;body&quot;&gt;=0A      &lt;tr&gt;=0A      &lt;td&gt;&amp;nbsp;&lt;/td&gt;=0A      &lt;td class=
+=3D&quot;container&quot;&gt;=0A      &lt;div class=3D&quot;content&quot;&gt;=0A      &lt;!-- START CENTERED=
+ WHITE CONTAINER --&gt;=0A      &lt;table class=3D&quot;main&quot;&gt;=0A      &lt;!-- START MAIN=
+ CONTENT AREA --&gt;=0A      &lt;tr&gt;=0A      &lt;td class=3D&quot;wrapper&quot;&gt;=0A      &lt;tabl=
+e border=3D&quot;0&quot; cellpadding=3D&quot;0&quot; cellspacing=3D&quot;0&quot;&gt;=0A      &lt;tr&gt;=0A      &lt;t=
+d&gt;&lt;div&gt;Dear=C2=A0&lt;span&gt;admin&lt;/span&gt;,&lt;/div&gt;=0A&lt;div&gt;&lt;span&gt;=C2=A0&lt;/span&gt;&lt;/div&gt;=
+=0A&lt;div&gt;Wishing you a day filled with joy, laughter, and all the things tha=
+t make birthdays extra special!=C2=A0&lt;/div&gt;=0A&lt;div&gt;&lt;/div&gt;=0A&lt;div&gt;On your bi=
+rthday, I hope you take a moment to reflect on the incredible person you ar=
+e and the positive impact you've had on those around you. Your presence bri=
+ngs so much happiness, and today is all about celebrating you!&lt;/div&gt;=0A&lt;div=
+&gt;&lt;/div&gt;=0A&lt;div&gt;May the year ahead be filled with exciting adventures, new o=
+pportunities, and moments of pure bliss. Here's to health, success, and eve=
+rything your heart desires.=C2=A0&lt;/div&gt;=0A&lt;div&gt;&lt;/div&gt;=0A&lt;div&gt;As you blow ou=
+t the candles, remember that your friends and family are cheering you on fr=
+om near and far. May your day be as fantastic as you are!&lt;/div&gt;=0A&lt;div&gt;&lt;/di=
+v&gt;=0A&lt;div&gt;Happy Birthday,=C2=A0&lt;span&gt;admin&lt;/span&gt;!=C2=A0&lt;/div&gt;=0A&lt;div&gt;&lt;/div=
+&gt;=0A&lt;div&gt;Warmest wishes,&lt;/div&gt;=0A&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;&lt;/td&gt;=0A      &lt;/tr&gt;=0A =
+     &lt;/table&gt;=0A      &lt;/td&gt;=0A      &lt;/tr&gt;=0A      &lt;!-- END MAIN CONTENT ARE=
+A --&gt;=0A      &lt;/table&gt;=0A      &lt;!-- START FOOTER --&gt;=0A      &lt;div class=3D&quot;=
+footer&quot;&gt;=0A      &lt;table border=3D&quot;0&quot; cellpadding=3D&quot;0&quot; cellspacing=3D&quot;0&quot;&gt;=
+=0A      &lt;tr&gt;=0A      &lt;td class=3D&quot;content-block&quot;&gt;=0A      &lt;span&gt;Marx HR&lt;/s=
+pan&gt;=0A      &lt;/td&gt;=0A      &lt;/tr&gt;=0A      &lt;/table&gt;=0A      &lt;/div&gt;=0A      &lt;!=
+-- END FOOTER --&gt;=0A      &lt;!-- END CENTERED WHITE CONTAINER --&gt;=0A      &lt;/d=
+iv&gt;=0A      &lt;/td&gt;=0A      &lt;td&gt;&amp;nbsp;&lt;/td&gt;=0A      &lt;/tr&gt;=0A      &lt;/table&gt;=0A=
+      &lt;/body&gt;=0A      &lt;/html&gt;
+
+--B_ALT_65a7c2c7973cf--</pre>
