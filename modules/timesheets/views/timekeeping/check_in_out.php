@@ -1,4 +1,18 @@
-      <input type="hidden" name="hour_attendance" value="<?php echo date('H'); ?>">
+<style>
+  .total_work_hours{
+    align-items: center;
+      background-color: #f9f9f9;
+      border: 5px solid #e3e3e3;
+      border-radius: 50%;
+      display: flex;
+      font-size: 18px;
+      height: 120px;
+      justify-content: center;
+      margin: 0 auto;
+      width: 120px;
+  }
+</style>
+<input type="hidden" name="hour_attendance" value="<?php echo date('H'); ?>">
       <input type="hidden" name="minute_attendance" value="<?php echo date('i'); ?>">
       <input type="hidden" name="second_attendance" value="<?php echo date('s'); ?>">
       <input type="hidden" name="date_attendance" value="<?php echo date('Y-m-d H:i:s'); ?>">
@@ -31,7 +45,9 @@
                   <br>
                   <div class="clearfix"></div>
                 </div>
-
+                <div class='row total_work_hours'>
+                  <span class='total_hours'></span>
+                </div>  
                 <div id="clock" class="clock">
                   <div id="hourHand" class="hourHand"></div>
                   <div id="minuteHand" class="minuteHand"></div>
@@ -58,13 +74,14 @@
                 $break_check_in_out = '';
 
                 $data_check_in_out = $CI->timesheets_model->get_list_check_in_out(date('Y-m-d'), get_staff_user_id());
-                
                 $break_in_out = $CI->timesheets_model->get_list_break_in_out(date('Y-m-d'), get_staff_user_id());
-
                 $html_list = '';
+
+
                 foreach ($data_check_in_out as $key => $value) {
                   $alert_type = 'alert-success';
                   $type_check_in_out = $value['type_check'];
+
                   $type_check = _l('checked_in_at');
                   if($value['type_check'] == 2){  
                     $type_check = _l('checked_out_at');
@@ -73,6 +90,22 @@
                   $html_list .= '<div class="row"><div class="col-md-12"><div class="alert '.$alert_type.'">'.$type_check.': '._dt($value['date']).'</div></div></div>';
                 } 
 
+                // if(!empty($break_in_out))
+                // {
+                //   foreach ($break_in_out as $key => $value) {
+                //     $break_alert_type = 'alert-success';
+                //     $break_check_in_out = $value['type_check'];
+
+                //     $break_type_check = _l('break_in_at');
+                //     if($value['type_check'] == 2){  
+                //       $break_type_check = _l('break_out_at');
+                //       $break_alert_type = 'alert-warning';
+                //     }
+                //     $html_list .= '<div class="row"><div class="col-md-12"><div class="alert '.$break_alert_type.'">'.$break_type_check.': '._dt($value['date']).'</div></div></div>';
+
+                //     print_R($html_list); die;
+                //   }
+                // }
 
                 foreach ($break_in_out as $key => $value) {
                     $break_alert_type = 'alert-success';
@@ -83,6 +116,8 @@
                       $break_type_check = _l('break_out_at');
                       $break_alert_type = 'alert-warning';
                     }
+                    // $html_list .= '<div class="row"><div class="col-md-12"><div class="alert '.$break_alert_type.'">'.$break_type_check.': '._dt($value['date']).'</div></div></div>';
+
                   }
 
                 ?>
@@ -139,7 +174,6 @@
                      <button class="btn btn-primary check_in"><?php echo _l('check_in'); ?></button>
                      <?php echo form_close(); } ?>
                    </div>
-
                    <!-- start : break in button -->
                    <?php
                     if(($type_check_in_out == 1 && ($break_check_in_out == '' || $break_check_in_out == '2')) || is_admin()){ ?>
@@ -157,7 +191,7 @@
 
                    <!-- End : break in button -->
 
-                    <!-- start : break out button -->
+                    <!-- start : break in button -->
                    <?php
                     if(($break_check_in_out == '1') || is_admin()){ ?>
                       <div class="bottom_co_btn_item"> 
@@ -171,7 +205,8 @@
                      </div>
                      <?php echo form_close(); } ?>
 
-                   <!-- End : break out button -->
+                   <!-- End : break in button -->
+
 
                    <div class="bottom_co_btn_item">              
                      <?php if($type_check_in_out == 1 || $allows_updating_check_in_time == 1 || is_admin()){

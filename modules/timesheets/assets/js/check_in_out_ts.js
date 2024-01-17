@@ -106,6 +106,8 @@
       response = JSON.parse(response);
       $('#attendance_history').html('');
       $('#attendance_history').html(response.html_list);
+      $('.total_hours').html('');
+      $('.total_hours').html(response.total_hours);
     });
    }
  }

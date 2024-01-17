@@ -4511,10 +4511,16 @@ public function check_in_ts() {
 				}
 				$html_list .= '<div class="row"><div class="col-md-12"><div class="alert ' . $alert_type . '">' . $type_check . ': ' . _dt($value['date']) . '</div></div></div>';
 			}
+
+			$data_check_in_out = $this->timesheets_model->get_list_check_in_out(date('Y-m-d'), get_staff_user_id());
+			$totalWorkHours = 0;
+			$totalWorkHours = $this->calculateTotalWorkHours($data_check_in_out);
+
 			echo json_encode([
 				'html_list' => $html_list,
 				'allows_updating_check_in_time' => $allows_updating_check_in_time,
 				'type_check_in_out' => $type_check_in_out,
+				"total_hours"	=> $totalWorkHours." Hours"
 			]);
 			die;
 		}
@@ -6888,4 +6894,28 @@ public function check_in_ts() {
 		}
 	}
 
+	//  calculate work hours
+	function calculateTotalWorkHours($workData)
+	{
+		$totalWorkSeconds = 0;
+		$checkInTime = null;
+
+		foreach ($workData as $entry) {
+			if ($entry['type_check'] == 1) {
+				// Check-in time
+				$checkInTime = strtotime($entry['date']);
+			} elseif ($entry['type_check'] == 2 && $checkInTime !== null) {
+				// Check-out time
+				$checkOutTime = strtotime($entry['date']);
+				$totalWorkSeconds += ($checkOutTime - $checkInTime);
+				$checkInTime = null; // Reset check-in time for the next pair
+			}
+		}
+
+		// Convert total seconds to hours and minutes
+		$hours = floor($totalWorkSeconds / 3600);
+		$minutes = floor(($totalWorkSeconds % 3600) / 60);
+
+		return sprintf('%02d:%02d', $hours, $minutes);
+	}
 }
