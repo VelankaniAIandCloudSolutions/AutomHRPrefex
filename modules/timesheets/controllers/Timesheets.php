@@ -1302,6 +1302,15 @@ class timesheets extends AdminController {
 				}
 			}
 		}
+
+			if ($access_history_string != '') {
+
+				$html .= '<li class="list-group-item justify-content-between"><ul class="list-group">
+						<li class="list-group-item active">' . _l('access_history') . '</li>
+						' . $access_history_string . '
+						</ul></li>';
+			}
+
 			$break_history_string = '';
 			$break_history =  $this->timesheets_model->get_list_break_in_out($time, $data['staffid']);
 			if ($break_history) {
@@ -1313,13 +1322,7 @@ class timesheets extends AdminController {
 					}
 				}
 
-			if ($access_history_string != '') {
-
-				$html .= '<li class="list-group-item justify-content-between"><ul class="list-group">
-						<li class="list-group-item active">' . _l('access_history') . '</li>
-						' . $access_history_string . '
-						</ul></li>';
-			}
+			
 			if ($break_history_string != '') {
 
 				$html .= '<li class="list-group-item justify-content-between"><ul class="list-group">
