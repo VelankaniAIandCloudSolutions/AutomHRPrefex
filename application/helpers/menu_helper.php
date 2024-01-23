@@ -575,4 +575,13 @@ function app_init_admin_sidebar_menu_items()
         'position' => 10,
         'badge'    => [],
     ]);
+
+    if (has_permission('entity_transfer', '', 'list')) {
+        $CI->app_menu->add_setup_menu_item('entity-transfer', [
+            'href'     => admin_url('entity_transfer'),
+            'name'     => _l('acs_entity_transfer'),
+            'position' => 40,
+            'badge'    => [],
+        ]);
+    }
 }

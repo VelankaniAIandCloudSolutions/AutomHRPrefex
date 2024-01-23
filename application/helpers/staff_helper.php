@@ -175,6 +175,16 @@ function get_available_staff_permissions($data = [])
         ];
     }
 
+    if ($addLeadsPermission) {
+        $corePermissions['entity_transfer'] = [
+            'name'         => _l('entity_transfer'),
+            'capabilities' => [
+                'list'   => _l("entity_transfer_pending_list"),
+                'edit' => _l('entity_transfer_employee'),
+            ],
+        ];
+    }
+
     return hooks()->apply_filters('staff_permissions', $corePermissions, $data);
 }
 /**

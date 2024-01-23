@@ -3930,3 +3930,13 @@ $lang['attendance_start_date']                              = 'Start Date';
 $lang['attendance_end_date']                                = 'End Date';
 
 $lang['project_activity_project_attendance_file_removed']   = 'Removed project attendance file';
+$lang['entity_transfer']                                    = 'Entity Transfer';
+$lang['entity_transfer_pending_list']                       = 'Entity Transfer Pending List';
+$lang['entity_transfer_employee']                           = 'Entity Transfer Employee';
+$lang['acs_entity_transfer']                                = 'Entity Transfer';
+
+$lang['movement_form']                                      = 'Movement Form';
+$lang['branch']                                             = 'Branch';
+$lang['branches']                                           = 'Branches';
+$lang['prefix']                                             = 'Prefix';
+$lang['new_employee_id']                                             ='New Employee Id';

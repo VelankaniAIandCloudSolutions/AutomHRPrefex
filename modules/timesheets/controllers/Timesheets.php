@@ -1148,6 +1148,10 @@ class timesheets extends AdminController {
 
 		foreach ($data['value'] as $key => $value) {
 			$value = explode(':', $value);
+			
+			$exp_val1 = explode("|", $value[1]);
+			$value[1] = $exp_val1[0];
+
 			if (isset($value[1]) && $value[1] > 0 || $value[0] == 'M' || $value[0] == 'HO' || $value[0] == 'B') {
 				switch ($value[0]) {
 				case 'AL':
