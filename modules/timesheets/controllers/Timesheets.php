@@ -6989,10 +6989,17 @@ public function check_in_ts() {
 				{
 					$this->db->where_in("department.departmentid", implode(",", $department_fillter));
 				}
-				if(!empty($staff_fillter))
+				if(!empty($staff_fillter) && is_admin())
 				{
 					$this->db->where_in("staff.staffid", implode(",", $staff_fillter));
 				}
+				else if(! is_admin()){
+					$this->db->where_in("staff.staffid", get_staff_user_id());
+				}
+				else{
+					
+				}
+
 
 				if(isset($_POST['search']['value']) && $_POST['search']['value'] != "")
 				{
