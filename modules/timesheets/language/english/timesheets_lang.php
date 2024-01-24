@@ -871,3 +871,6 @@ $lang['checked_out']  = 'Checked out';
 $lang['allow_employees_to_create_work_points']  = 'Allow employees to create Work Points';
 $lang['ts_norms_of_leave']  = 'Norms of Leave';
 $lang['ts_api_integration']   = 'API integration';
+$lang['check_in_out_hourly_progress']  = 'Check-in/out Hourly Progress';
+$lang['total_working_hours']    = "Total Working Hours";
+$lang['total_break_hours']    = "Total Break Hours";

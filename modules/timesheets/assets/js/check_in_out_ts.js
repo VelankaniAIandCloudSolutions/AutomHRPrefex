@@ -52,6 +52,7 @@ var run_time;
     date: 'required'
   })   
   $(".btn-close-edit-datetime").click();
+  $(".total_hours").html("00:00 Hours");
 }
 /**
 * update Clock

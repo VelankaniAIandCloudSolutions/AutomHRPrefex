@@ -192,6 +192,19 @@
 			$('.ratio_check_in_out_by_workplace').removeClass('hide');
 			$('#report-time').removeClass('hide');
 		} 
+
+		else if(type == 'check_in_out_hourly_progress'){
+			$('.department_2_fr').removeClass('hide');
+			$('.staff_2_fr').removeClass('hide');
+			// $('.type_22_fr').removeClass('hide');
+			$('.roles_2_fr').removeClass('hide');
+			$('.sorting_2_table').removeClass('hide');
+
+			$('#check_in_out_progress_according_to_the_route').removeClass('hide');
+			$('#report-month').removeClass('hide');
+			$('#year_requisition').removeClass('hide');
+		} 
+
 		gen_reports();
 	}
 
@@ -494,6 +507,9 @@
 	 			case 'ratio_check_in_out_by_workplace':
 	 			ratio_check_in_out_by_workplace();
 	 			break;  
+				case 'check_in_out_hourly_progress':
+				check_in_out_hourly_progress();
+	 			break; 
 	 		}
 	 	}
 	 }
@@ -583,6 +599,23 @@
 	 		table.find('tbody').html('');
 	 		list_fillter = response.list_fillter;
 	 		initDataTable(table, admin_url + 'timesheets/check_in_out_progress_report', false, list_fillter , fnServerParams, [0, 'desc']);
+	 	});
+	 }
+
+
+	 function check_in_out_hourly_progress(){
+		
+	 	"use strict";
+	 	$('#check_in_out_progress_according_to_the_route').html('<table class="table table-check_in_out_progress_hourly_report scroll-responsive"><thead><tr></tr></thead><tbody></tbody><tfoot><tr></tr></tfoot></table>');
+	 	$('.title_table').text('<?php echo _l('check_in_out_hourly_progress'); ?>');
+	 	var table = $('table.table-check_in_out_progress_hourly_report');
+	 	$.get(admin_url+'timesheets/get_header_report_check_in_out_hourly/'+$('select[name="months_2_report"]').val()+'/'+$('select[name="year_requisition"]').val()).done(function(response){
+	 		response = JSON.parse(response);
+	 		table.find('thead tr').html(response.col_header);
+	 		table.find('tfoot tr').html(response.col_footer);
+	 		table.find('tbody').html('');
+	 		list_fillter = response.list_fillter;
+	 		initDataTable(table, admin_url + 'timesheets/check_in_out_progress_hourly_report', false, list_fillter , fnServerParams, [0, 'desc']);
 	 	});
 	 }
 	</script>
