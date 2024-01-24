@@ -6927,4 +6927,195 @@ public function check_in_ts() {
 
 		return sprintf('%02d:%02d', $hours, $minutes);
 	}
+
+	/**
+	 * get header report check in out hourly
+	 * @return json
+	 */
+	public function get_header_report_check_in_out_hourly($month, $year) {
+		if (isset($month) && isset($year)) {
+			if ($month != '' && $year != '') {
+				$col_header = '';
+				$col_footer = '';
+				$list_fillter = [];
+				$col_header .= '<th>' . _l('staff') . '</th>';
+				$col_footer .= '<td></td>';
+				
+				$col_header .= '<th>' ._l("total_working_hours"). '</th>';
+				$col_footer .= '<td></td>';
+				$list_fillter[0] = 1;
+				$col_header .= '<th>' ._l("total_break_hours"). '</th>';
+				$col_footer .= '<td></td>';
+				$list_fillter[1] = 2;
+				echo json_encode([
+					'col_header' => $col_header,
+					'list_fillter' => $list_fillter,
+					'col_footer' => $col_footer,
+				]);
+			}
+		}
+	}
+
+	public function check_in_out_progress_hourly_report() {
+	
+		if ($this->input->is_ajax_request()) {
+			if ($this->input->post()) {
+				$month = $this->input->post('months_2_report');
+				$year = $this->input->post('year_requisition');
+				$staff_fillter = $this->input->post("staff_2_fillter");
+				$department_fillter = $this->input->post("department_2_fillter");
+				$role_fillter = $this->input->post("roles_2_fillter");
+				// $type_fillter = $this->input->post("type_22_fillter");
+
+				$select = [];
+				$columns = [];
+				$select[] = 'staffid';
+				$columns[] = 'staff';
+
+				$columns[] = _l("total_working_hours");
+				$columns[] = _l("total_break_hours");
+				
+				$this->db->select("staff.staffid as staffid");
+				$this->db->from(db_prefix()."staff as staff");
+				$this->db->join(db_prefix()."hr_job_position as position","position.position_id = staff.job_position","left");
+				$this->db->join(db_prefix()."departments as department","department.departmentid = position.department_id","left");
+				
+				if(!empty($role_fillter))
+				{
+					$this->db->where_in("staff.role", implode(",", $role_fillter));
+				}
+
+				if(!empty($department_fillter))
+				{
+					$this->db->where_in("department.departmentid", implode(",", $department_fillter));
+				}
+				if(!empty($staff_fillter))
+				{
+					$this->db->where_in("staff.staffid", implode(",", $staff_fillter));
+				}
+
+				if(isset($_POST['search']['value']) && $_POST['search']['value'] != "")
+				{
+					$this->db->group_start();
+					$this->db->like("staff.firstname",$_POST['search']['value'],"both");
+					// $this->db->or_like("staff.middlename",$_POST['search']['value'],"both");
+					$this->db->or_like("staff.lastname",$_POST['search']['value'],"both");
+					$this->db->or_like("staff.staff_identifi",$_POST['search']['value'],"both");
+					$this->db->group_end();
+				}
+
+				$query = $this->db->get();
+				$result = $query->result_array();
+				$totalCountQuery = $this->db->query("SELECT FOUND_ROWS() AS total_rows");
+				$totalCount = $totalCountQuery->row()->total_rows;
+
+				
+				$final_data = array();
+				$output = array();
+				if(!empty($result))
+				{
+					foreach($result as $result_val)
+					{
+						$temp_final_data = array();
+						$staff_id = '';
+						$staff_id = $result_val['staffid'];
+
+						// Start : Staff total break time
+						$break_details = array();
+						$where = array();
+						$where['MONTH(date)'] = $month;
+						$where['Year(date)'] = $year;
+						$where['staff_id'] = $staff_id;
+						$break_details = $this->db->get_where(db_prefix() ."break_in_out",$where)->result_array();
+						$total_break_time = 0;
+						$break_in_array = array();
+						$break_out_array = array();
+
+						if (!empty($break_details)) {
+							foreach ($break_details as $break_details_val) {
+								if ($break_details_val['type_check'] == '1') {
+									array_push($break_in_array, $break_details_val['date']);
+								}
+
+								if ($break_details_val['type_check'] == '2') {
+									array_push($break_out_array, $break_details_val['date']);
+								}
+							}
+							foreach ($break_in_array as $id => $value) {
+								if (isset($break_out_array[$id])) {
+									// Convert date strings to DateTime objects
+									$date1 = new DateTime($break_out_array[$id]);
+									$date2 = new DateTime($break_in_array[$id]);
+						
+									// Calculate the time difference
+									$difference = $date2->diff($date1);
+						
+									// Convert the difference to minutes and add to total
+									$total_break_time += $difference->h * 60 + $difference->i;
+								}
+							}
+						}
+						// Convert total break time to hours and minutes
+						$total_break_time_hours = floor($total_break_time / 60);
+						$total_break_time_remaining_minutes = $total_break_time % 60;
+						// End : Staff total break time
+
+
+
+						// Start : Staff total check in/out time
+						$check_details = array();
+						$where = array();
+						$where['MONTH(date)'] = $month;
+						$where['Year(date)'] = $year;
+						$where['staff_id'] = $staff_id;
+						$check_details = $this->db->get_where(db_prefix() ."check_in_out",$where)->result_array();
+						$total_work_time = 0;
+						$work_time_in_array = array();
+						$work_time_out_array = array();
+
+						if (!empty($check_details)) {
+							foreach ($check_details as $check_details_val) {
+								if ($check_details_val['type_check'] == '1') {
+									array_push($work_time_in_array, $check_details_val['date']);
+								}
+
+								if ($check_details_val['type_check'] == '2') {
+									array_push($work_time_out_array, $check_details_val['date']);
+								}
+							}
+							foreach ($work_time_in_array as $id => $value) {
+								if (isset($break_out_array[$id])) {
+									// Convert date strings to DateTime objects
+									$date1 = new DateTime($work_time_out_array[$id]);
+									$date2 = new DateTime($work_time_in_array[$id]);
+						
+									// Calculate the time difference
+									$difference = $date2->diff($date1);
+						
+									// Convert the difference to minutes and add to total
+									$total_work_time += $difference->h * 60 + $difference->i;
+								}
+							}
+						}
+
+						$total_work_time_hours = floor($total_work_time / 60);
+						$total_work_time_remaining_minutes = $total_work_time % 60;
+						// End :  Staff total check in/out time
+						$temp_final_data[] = '<div class="min-width-200">' . get_staff_full_name($staff_id) . '</div>';
+						$temp_final_data[] = $total_work_time_hours.":". $total_work_time_remaining_minutes;
+						$temp_final_data[] = $total_break_time_hours.":". $total_break_time_remaining_minutes;
+
+						array_push($final_data, $temp_final_data);
+					}
+					$output['aaData']= $final_data;
+				}
+				$output['draw']= $this->input->post("draw");
+				$output['recordsTotal']= $totalCount;
+				$output['recordsFiltered']= count($final_data);
+				
+				echo json_encode($output);
+				die();
+			}
+		}
+	}
 }
