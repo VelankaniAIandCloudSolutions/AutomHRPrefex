@@ -122,10 +122,126 @@ class Entity_transfer extends AdminController
         $this->db->order_by("id","desc");
         $branch_query = $this->db->get(); 
         $branch_result = $branch_query->result_array();
-
+        $departments = array();
+        $departments = Entity_transfer::departments();
         $data['staff_list']    = $staff_list;
         $data['branch_list']    = $branch_result;
+        $data['departments']    = $departments;
         $data['title']         = _l('entity_transfer');
         $this->load->view('admin/entity_transfer/add', $data);
+    }
+
+    public function branch_location()
+    {
+        $branch_id = $this->input->post("branch_id");
+        
+        if($branch_id != "" )
+        {
+            $this->db->select("branch_id as id, branch_name, branch_prefix, address");
+            $this->db->from(db_prefix()."branches");
+            $this->db->where("branch_status","0");
+            $this->db->where("branch_id",$branch_id);
+            $this->db->order_by("id","desc");
+            $branch_query = $this->db->get(); 
+            $branch_result = $branch_query->result_array();
+
+            if(!empty($branch_result))
+            {
+                foreach($branch_result as $val)
+                {
+                    $final_result =  $val;
+                }
+            }
+            if(!empty($final_result))
+            {
+                echo json_encode($final_result);
+            }
+        }
+    }
+
+    public function staff_info()
+    {
+        $staff_id = $this->input->post("staff_id");
+        
+        if($staff_id != "" )
+        {
+            $final_result = array();
+            $staff_list = $this->staff_model->get('', array("staffid" => $staff_id));
+            if(!empty($staff_list))
+            {
+               
+                foreach($staff_list as $val)
+                {
+                    $final_result =  $val;
+                }
+            }
+            if(!empty($final_result))
+            {
+                echo json_encode($final_result);
+            }
+        }
+        else{
+            $return_val[] = 'No Records found';
+            echo json_encode($return_val);
+        }
+    }
+
+    public function digit_character_extract($string = '')
+    {
+        $characters = preg_replace("/[0-9]/", "", $string);
+        $digits = preg_replace("/[^0-9]/", "", $string); 
+
+        $final_result = array();
+        $final_result = array(
+            "character" => $characters,
+            "digits" => $digits,
+        );
+        echo json_encode($final_result); 
+    }
+
+    public function departments()
+    {
+        $ajax_req = $this->input->is_ajax_request();
+
+        $staff_id = $this->input->post("staff_id"); 
+        $final_result = array();
+        $department_id ='';
+        if($staff_id != "")
+        {
+            $staff_department_list= array();
+            $this->db->where("staffid", $staff_id);
+            $staff_department_list = $this->db->get(db_prefix()."staff_departments")->result_array();
+            if(!empty($staff_department_list))
+            {
+                foreach($staff_department_list  as $val)
+                {
+                    $department_id = $val['departmentid'];
+                }
+            }
+        }
+        if($department_id != "")
+        {
+            $department_list = $this->db->get_where(db_prefix()."departments", array("departmentid" => $department_id))->result_array();
+        }
+
+        if($staff_id == ""){
+            $department_list = $this->db->get(db_prefix()."departments")->result_array();
+        }
+
+        if(!empty($department_list))
+        {
+            foreach($department_list as $val)
+            {
+                $final_result =  $val;
+            }
+        }
+
+        if($ajax_req)
+        {
+            echo json_encode($final_result);
+        }
+        else{
+            return $department_list;
+        }
     }
 }
