@@ -2180,7 +2180,7 @@ class timesheets extends AdminController {
 							$months_filter = $year_leave . '-' . $i;
 						}
 						$count = $this->timesheets_model->get_date_leave_in_month($aRow['staffid'], $months_filter);
-						$test[]  = $this->db->last_query();
+						// $test[]  = $this->db->last_query();
 						$timesheets_total_day_off += $count;
 						
 
