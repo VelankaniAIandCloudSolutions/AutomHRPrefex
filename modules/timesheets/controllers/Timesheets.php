@@ -2153,7 +2153,6 @@ class timesheets extends AdminController {
 				$rResult = $result['rResult'];
 
 				foreach ($rResult as $aRow) {
-
 					$requisition_number_of_day_off = $this->timesheets_model->get_requisition_number_of_day_off($aRow['staffid'], $year_leave);
 					$timesheets_max_leave_in_year = $requisition_number_of_day_off['total_day_off_in_year'];
 					$timesheets_total_day_off = 0;
@@ -2166,6 +2165,12 @@ class timesheets extends AdminController {
 
 					$row[] = $total_leave;
 					$sum_count = 0;
+					$leave_count= 0;
+					$monthly_eligible_leave = 0;
+					
+					$monthly_eligible_leave = round($total_leave / 12, 2);
+					$available_leave =0;
+					$previous_month_available_leave = 0;
 					for ($i = 1; $i <= 12; $i++) {
 
 						if ($i < 10) {
@@ -2173,17 +2178,32 @@ class timesheets extends AdminController {
 
 						} else {
 							$months_filter = $year_leave . '-' . $i;
-
 						}
 						$count = $this->timesheets_model->get_date_leave_in_month($aRow['staffid'], $months_filter);
-						$row[] = $count;
+						$test[]  = $this->db->last_query();
 						$timesheets_total_day_off += $count;
+						
+
+						if(date("m") < $i)
+						{
+							$monthly_eligible_leave = 0;
+						} 
+						
+						$available_leave = round(($monthly_eligible_leave - $count), 2);
+						
+						// $row[] = $monthly_eligible_leave;
+						$row[] = round(($previous_month_available_leave + $monthly_eligible_leave), 2);
+						$row[] = round($count, 2);
+						$row[] = round(($previous_month_available_leave + $available_leave), 2);
+						$previous_month_available_leave = round(($previous_month_available_leave + $available_leave), 2);
+						// $row[] = $tmp_table;
 					}
+					
 					$row[] = $timesheets_total_day_off;
 					$row[] = $total_leave - $timesheets_total_day_off;
 					$output['aaData'][] = $row;
 				}
-
+				// echo"<pre>"; print_r($test); die;
 				echo json_encode($output);
 				die();
 			}
