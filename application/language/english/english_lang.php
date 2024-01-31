@@ -3951,3 +3951,6 @@ $lang['manufacturing']                                      = 'Manufacturing';
 $lang['precast']                                            = 'Precast';
 $lang['tower_building']                                     = 'Tower Building';
 $lang['division']                                           = 'Division';
+$lang['entity_transfer_saved']                              = 'Entity Trasnfer Successfully.';
+$lang['pending_for_confirmation']                           = 'Pending for Confirmation';
+$lang['entity_transfer_confirmed_waiting_data_transfer']    = 'Entity Transfer has been confirmed. Transferer data will display from Effective Date';

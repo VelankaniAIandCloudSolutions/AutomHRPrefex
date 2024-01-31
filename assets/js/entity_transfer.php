@@ -135,4 +135,6 @@
         let department_id = $(this).val();
         job_position(department_id);
     });
+
+  
 </script>

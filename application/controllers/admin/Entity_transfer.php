@@ -28,7 +28,8 @@ class Entity_transfer extends AdminController
         $this->db->select('COUNT(*) as total');
         $this->db->from(db_prefix() . "transfer_history as th");
         $this->db->join(db_prefix() . "staff as staff", "staff.staffid = th.user_id", "inner");
-        $this->db->where("th.status", "0");
+        $this->db->where("th.status != 2");
+        $this->db->where("th.is_deleted", "0");
 
         if ($search !== "") {
             $this->db->group_start();
@@ -53,7 +54,8 @@ class Entity_transfer extends AdminController
         $this->db->join(db_prefix() . "departments as departments", "departments.departmentid = th.department_id", "left");
         $this->db->join(db_prefix() . "hr_job_position as hr_job_position", "hr_job_position.position_id = th.designation_id", "left");
         $this->db->join(db_prefix() . "staff as manager", "manager.staffid = th.report_to", "left");
-        $this->db->where("th.status", "0");
+        $this->db->where("th.status != 2");
+        $this->db->where("th.is_deleted", "0");
 
         if ($search !== "") {
             $this->db->group_start();
@@ -87,19 +89,45 @@ class Entity_transfer extends AdminController
 
                 $type_change = $response_val['type_change'];
                 $effective_date = date("d-m-Y", strtotime($response_val['effective_date']));
-                $previous_emp_code = $response_val['previous_branch_prefix'] . $response_val['prev_employee_id'];
-
+                
+                $previous_emp_code = $response_val['old_employee_code'];
+                
+                if($type_change == 1)
+                {
+                    $type_change = '';
+                    $type_change = "Internal Transfer";
+                }
+                if($type_change == 2)
+                {
+                    $type_change = '';
+                    $type_change = "External Transfer";
+                }
+                $delete_btn = '
+                <a href="javascript:0;" class="btn-sm btn-success" onclick="entity_transfer_confirm('.$response_val['id'].'); return false;" ><i class="fa fa-check fa-lg"></i></a>
+                <a href="javascript:0;" class="btn-sm btn-danger" onclick="entity_delete('.$response_val['id'].'); return false;" ><i class="fa-regular fa-trash-can fa-lg"></i></a>';
+                $status = '';
+                if($response_val['status'] == '0')
+                {
+                    $status = '<span class="badge menu-badge !tw-bg-warning-600">'._l('pending_for_confirmation').'</span>';
+                }
+                if($response_val['status'] == '1')
+                {
+                    $delete_btn ='';
+                    $status = '<span class="badge menu-badge tw-bg-success-600">'._l('entity_transfer_confirmed_waiting_data_transfer').'</span>';
+                }
                 // Create an associative array for each row
                 $row_data = array(
-                    "s_no" => $key +1,
+                    "s_no" => $key + 1 .'.',
                     "staff_name" => $staff_name,
                     "type_change" => $type_change,
                     "effective_date" => $effective_date,
                     "previous_emp_code" => $previous_emp_code,
-                    "new_emp_code" => $response_val['new_branch_prefix'] . $response_val['new_employee_id'],
+                    "new_emp_code" => $response_val['new_employee_code'],
                     "department_name" => $response_val['department_name'] ? $response_val['department_name'] : "",
                     "position_name" => $response_val['position_name'] ? $response_val['position_name'] :"",
                     "manager_name" => $response_val['manager_firstname'] . ' ' . $response_val['manager_middlename'] . ' ' . $response_val['manager_lastname'],
+                    "status"        =>$status,
+                    "delete"    => $delete_btn
                 );
 
                 $final_data[] = $row_data;
@@ -154,7 +182,15 @@ class Entity_transfer extends AdminController
             $division = $this->input->post('division');
             $id = array("staffid"   =>  $staff_members);
             $staff_data = $this->staff_model->get('',  $id);
-            $prev_branch_id = '';
+            $prev_branch_id = $old_employee_code = $new_employee_code = '';
+            if(!empty($staff_data))
+            {
+                $staff_data = $staff_data[0];
+                $prev_branch_id = $staff_data['branch_id'];
+                $old_employee_code = $staff_data['staff_identifi'];
+            }
+            $new_employee_code = $prefix.$new_employee_id;
+
             $insert_data = array();
             $insert_data = array(
                 "user_id"           =>  $user_id,
@@ -167,9 +203,20 @@ class Entity_transfer extends AdminController
                 "division"          =>  $division,
                 "business_unit"     =>  $business_unit,
                 "branch_id"         =>  $branch_id,
-                "prev_branch_id"     => $prev_branch_id,
-                "employee_id"     =>  $prefix,
+                "prev_branch_id"    =>  $prev_branch_id,
+                "employee_id"       =>  $staff_members,
+                "old_employee_code" =>  $old_employee_code,
+                "new_employee_code" =>  $new_employee_code,
+                "old_employee_data" =>  json_encode($staff_data)
             );
+            $this->db->insert(db_prefix()."transfer_history", $insert_data);
+            $insert_id = '';
+            $insert_id  = $this->db->insert_id();
+            if($insert_id)
+            {
+                set_alert('success', _l('added_successfully', _l('entity_transfer_saved')));
+                redirect(admin_url('entity_transfer')); 
+            }
         }
     }
 
@@ -318,6 +365,65 @@ class Entity_transfer extends AdminController
         }
         else{
             return $position_list;
+        }
+    }
+
+    function entity_delete()
+    {
+        $id = $this->input->post("id");
+        $this->db->where("id", $id);
+        $this->db->update(db_prefix()."transfer_history", array("is_deleted" => '1'));
+        set_alert('danger', _l('entity_transfer').' '._l('deleted'));
+        echo '1';
+    }
+    function entity_transfer_confirm()
+    {
+        $id = $this->input->post("id");
+        $this->db->where("id", $id);
+        $this->db->update(db_prefix()."transfer_history", array("status" => '1'));
+        set_alert('success', _l('entity_transfer', _l('updated_successfully')));
+        echo '1';
+    }
+
+    //  cron method for transfer data
+    function entity_trasnfer_data()
+    {
+        ini_set("memory_limit", "-1");
+        set_time_limit(0);
+
+        $date = '';
+        $date = date("Y-m-d");
+        $this->db->where("effective_date", $date);
+        $this->db->where("is_deleted", '0');
+        $this->db->where("status", '1');
+        $query = $this->db->get(db_prefix()."transfer_history");
+        $result = $query->result_array();
+        if(!empty($result))
+        {
+            foreach($result as $value)
+            {
+                $update_staff_data = array();
+                $update_staff_data = array(
+                    "job_position"      =>  $value['designation_id'],
+                    "team_manage"       =>  $value['report_to'],
+                    "staff_identifi"    =>  $value['new_employee_code'],
+                    "branch_id"         =>  $value['branch_id'],
+                    "date_update"       =>  date("Y-m-d")
+                );
+
+                $this->db->where("staffid", $value['employee_id']);
+                $this->db->update(db_prefix()."staff",  $update_staff_data);
+                
+                $department_update = array(
+                    "departmentid"   => $value['department_id'],
+                    "branch_id"      => $value['branch_id']
+                );
+
+                $this->db->where("staffid", $value['employee_id']);
+                $this->db->update(db_prefix()."staff_departments",  $department_update);
+                $this->db->where("id", $value['id']);
+                $this->db->update(db_prefix()."transfer_history",  array("status" => '2'));
+            }
         }
     }
 }
