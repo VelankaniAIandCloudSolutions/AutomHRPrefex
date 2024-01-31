@@ -48,6 +48,7 @@
 <div class="row">
     <div class="col-md-12">
         <input type="submit" name="save_attendance" class="btn btn-primary" value="<?php echo _l('save');?>">
+        <a href="<?php echo base_url('uploads/attendance_sample_template.xlsx');?>" class="btn btn-primary"><i class="fa fa-download tw-mr-1"></i><?php echo _l('download_sample_attendance_file');?></a>
     </div>
 </div>
 

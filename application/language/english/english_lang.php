@@ -3930,3 +3930,4 @@ $lang['attendance_start_date']                              = 'Start Date';
 $lang['attendance_end_date']                                = 'End Date';
 
 $lang['project_activity_project_attendance_file_removed']   = 'Removed project attendance file';
+$lang['download_sample_attendance_file'] = 'Download Sample Attendance File';
