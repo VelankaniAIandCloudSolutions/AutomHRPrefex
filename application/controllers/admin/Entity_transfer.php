@@ -115,6 +115,10 @@ class Entity_transfer extends AdminController
 
     public function add()
     {
+        if(isset($_POST) && !empty($_POST))
+        {
+            $this->save_transfer_entity($_POST);
+        }   
         $staff_list = $this->staff_model->get();
         $this->db->select("branch_id as id, branch_name, branch_prefix");
         $this->db->from(db_prefix()."branches");
@@ -129,6 +133,44 @@ class Entity_transfer extends AdminController
         $data['departments']    = $departments;
         $data['title']         = _l('entity_transfer');
         $this->load->view('admin/entity_transfer/add', $data);
+    }
+
+    function save_transfer_entity($post = array())
+    {
+        if(!empty($post))
+        {
+            $user_id = get_staff_user_id(); // user loggedin id
+            $type_change = $this->input->post('type_of_change');
+            $staff_members = $this->input->post('staff_members'); // employee id
+            $branch_id = $this->input->post('branch_id');
+            $prefix = $this->input->post('prefix');
+            $new_employee_id = $this->input->post('new_employee_id');
+            $department = $this->input->post('department');
+            $job_position = $this->input->post('job_position');
+            $reporting_to = $this->input->post('reporting_to');
+            $effective_date = $this->input->post('effective_date');
+            $location = $this->input->post('location');
+            $business_unit = $this->input->post('business_unit');
+            $division = $this->input->post('division');
+            $id = array("staffid"   =>  $staff_members);
+            $staff_data = $this->staff_model->get('',  $id);
+            $prev_branch_id = '';
+            $insert_data = array();
+            $insert_data = array(
+                "user_id"           =>  $user_id,
+                "type_change"       =>  $type_change,
+                "department_id"     =>  $department,
+                "designation_id"    =>  $job_position,
+                "report_to"         =>  $reporting_to,
+                "effective_date"    =>  date("Y-m-d", strtotime($effective_date)),
+                "location"          =>  $location,
+                "division"          =>  $division,
+                "business_unit"     =>  $business_unit,
+                "branch_id"         =>  $branch_id,
+                "prev_branch_id"     => $prev_branch_id,
+                "employee_id"     =>  $prefix,
+            );
+        }
     }
 
     public function branch_location()
@@ -242,6 +284,40 @@ class Entity_transfer extends AdminController
         }
         else{
             return $department_list;
+        }
+    }
+
+    public function job_position()
+    {
+        $ajax_req = $this->input->is_ajax_request();
+
+        $department_id = $this->input->post("department_id"); 
+        $final_result = array();
+        $position_list =  array();
+
+        if($department_id != "")
+        {   
+            $position_list = $this->db->get_where(db_prefix()."hr_job_position", array("department_id" => $department_id))->result_array();
+        }
+
+        if(!empty($position_list))
+        {
+            $temp_result = array();
+            foreach($position_list as $val)
+            {
+                $tmp_val = array();
+                $tmp_val['id']  =  $val['position_id'];
+                $tmp_val['position_name']  =  $val['position_name'];
+                array_push($temp_result, $tmp_val);
+            }
+        }
+
+        if($ajax_req)
+        {
+            echo json_encode($temp_result);
+        }
+        else{
+            return $position_list;
         }
     }
 }
