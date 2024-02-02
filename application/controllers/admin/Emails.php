@@ -129,10 +129,14 @@ class Emails extends AdminController
             'type'     => 'notifications',
             'language' => 'english',
         ]);
+        $data['offer_letter'] = $this->emails_model->get([
+            'type'     => 'offer_letter',
+            'language' => 'english',
+        ]);
 
         $data['title'] = _l('email_templates');
-
         $data['hasPermissionEdit'] = has_permission('email_templates', '', 'edit');
+        
 
         $this->load->view('admin/emails/email_templates', $data);
     }

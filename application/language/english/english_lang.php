@@ -3931,3 +3931,8 @@ $lang['attendance_end_date']                                = 'End Date';
 
 $lang['project_activity_project_attendance_file_removed']   = 'Removed project attendance file';
 $lang['download_sample_attendance_file'] = 'Download Sample Attendance File';
+$lang['offer_letter'] = 'Offer Letter';
+
+$lang['job_role'] = 'Job Position';
+$lang['annual_ctc'] = 'Annual CTC';
+$lang['monthly_breakup_ctc'] = 'Monthly Salary Breakup';

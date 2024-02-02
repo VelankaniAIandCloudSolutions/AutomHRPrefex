@@ -346,3 +346,12 @@ $lang['rec_ratio'] = 'Ratio';
 $lang['rec_address'] = 'Address';
 $lang['rec_score'] = 'Score';
 $lang['rec_care'] = 'Care';
+
+$lang['salary_details'] ='Salary Details';
+$lang['addition'] ='Addition';
+$lang['deduction'] ='Deduction';
+$lang['yearly'] = 'Yearly';
+
+$lang['job_role'] = 'Job Position';
+$lang['annual_ctc'] = 'Annual CTC';
+$lang['monthly_breakup_ctc'] = 'Monthly Salary Breakup';

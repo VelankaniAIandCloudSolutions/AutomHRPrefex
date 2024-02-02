@@ -68,6 +68,7 @@ function core_merge_fields($fields)
     $fields[] = 'merge_fields/notifications_merge_fields';
     $fields[] = 'merge_fields/invoice_batch_payments_merge_fields';
     $fields[] = 'merge_fields/other_merge_fields';
+    $fields[] = 'merge_fields/offer_letter_merge_fields';
 
     return $fields;
 }

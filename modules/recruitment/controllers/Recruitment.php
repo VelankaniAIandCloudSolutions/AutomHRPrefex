@@ -492,7 +492,30 @@ class recruitment extends AdminController {
 				if ($ids) {
 					handle_rec_candidate_file($ids);
 					handle_rec_candidate_avar_file($ids);
-					$success = true;
+					$salary_addition_data = array();
+					$salary_addition_data = array(
+						"Gross_CTC_(annual)"				=>	$data['Gross_CTC_(annual)'],
+						"Basic_Salary"						=>	$data['Basic_Salary'],
+						"DA"								=>	$data['DA'],
+						"HRA"								=>	$data['HRA'],
+						"SA"								=>	$data['SA'],
+						"LTA"								=>	$data['LTA'],
+						"Conveyance_Allowance"				=>	$data['Conveyance_Allowance'],
+						"Medical_Allowance"					=>	$data['Medical_Allowance'],
+						"Variable"							=>	$data['Variable'],
+						"PF_Amount_Employer_(annual)" 		=>	$data['PF_Amount_Employer_(annual)']
+					);
+					
+					$this->addtional_pf_details($ids, $salary_addition_data, $data['Gross_CTC_(annual)']);
+
+					$salary_deduction_data = array();
+					$salary_deduction_data = array(
+						"PF_Amount_Employee_(annual)"	=>	$data['PF_Amount_Employee_(annual)'],
+						"Accomodation_Deduction"		=>	$data['Accomodation_Deduction'],
+						"Other_Deduction"				=>	$data['Other_Deduction'],
+					);
+					$this->deduction_pf_details($ids, $salary_deduction_data);
+
 					$message = _l('added_successfully', _l('candidate_profile'));
 					set_alert('success', $message);
 				}
@@ -502,6 +525,31 @@ class recruitment extends AdminController {
 				if ($success == true) {
 					handle_rec_candidate_file($id);
 					handle_rec_candidate_avar_file($id);
+
+					$salary_addition_data = array();
+					$salary_addition_data = array(
+						"Gross_CTC_(annual)"				=>	$data['Gross_CTC_(annual)'],
+						"Basic_Salary"						=>	$data['Basic_Salary'],
+						"DA"								=>	$data['DA'],
+						"HRA"								=>	$data['HRA'],
+						"SA"								=>	$data['SA'],
+						"LTA"								=>	$data['LTA'],
+						"Conveyance_Allowance"				=>	$data['Conveyance_Allowance'],
+						"Medical_Allowance"					=>	$data['Medical_Allowance'],
+						"Variable"							=>	$data['Variable'],
+						"PF_Amount_Employer_(annual)" 		=>	$data['PF_Amount_Employer_(annual)']
+					);
+					
+					$this->addtional_pf_details($id, $salary_addition_data, $data['Gross_CTC_(annual)']);
+
+					$salary_deduction_data = array();
+					$salary_deduction_data = array(
+						"PF_Amount_Employee_(annual)"	=>	$data['PF_Amount_Employee_(annual)'],
+						"Accomodation_Deduction"		=>	$data['Accomodation_Deduction'],
+						"Other_Deduction"				=>	$data['Other_Deduction'],
+					);
+					$this->deduction_pf_details($id, $salary_deduction_data);
+
 					$message = _l('updated_successfully', _l('candidate_profile'));
 					set_alert('success', $message);
 				}
@@ -2563,7 +2611,172 @@ class recruitment extends AdminController {
         $pdf->Output($dir, 'F');
     }
 
+	// Candidate Salary Add
+	function addtional_pf_details($candidate_id ='', $post_data = array(), $annual_ctc = "0")
+    {
+        $user_id = $candidate_id;
+        $check_status = $this->db->get_where(db_prefix().'candidate_salary_breakup',array('candidate_id'=>$candidate_id))->row_array();
+        
+        if(count($check_status) == 0 )
+        {
+            $array_temp_data = array();
+            $anual_basic_salary = array();
 
+            $i= 1;
+            foreach($post_data as $key => $post_data_val)
+            {
+                $payroll_addition = array();
+                $payroll_addition = array(
+                    "category_name"         => "addtional",
+                    "addtion_name"          => str_replace("_"," ", $key),
+                    "unit_amount"           => $post_data_val,
+                    "id"                    => $i
+                );
 
+                array_push($array_temp_data, $payroll_addition);
+                $i++;
+            }
+            $result =array(
+                "annual_ctc"        =>  $annual_ctc,
+                'pf_addtional'  =>  json_encode($array_temp_data)
+            );
+            $result['candidate_id'] = $user_id;
+            $this->db->insert(db_prefix().'candidate_salary_breakup',$result);
+        }
+        else
+        {
+            $array_temp_data = array();
+            $anual_basic_salary = array();
+            $i= 1;
+            foreach($post_data as $key => $post_data_val)
+            {
+                $payroll_addition = array();
+                $payroll_addition = array(
+                    "category_name"         => "addtional",
+                    "addtion_name"          => str_replace("_"," ", $key),
+                    "unit_amount"           => $post_data_val,
+                    "id"                    => $i
+                );
+
+                array_push($array_temp_data, $payroll_addition);
+                $i++;
+            }
+
+            $result =array(
+                "annual_ctc"        =>  $annual_ctc,
+                'pf_addtional' => json_encode($array_temp_data)
+            );
+            $this->db->where('candidate_id',$user_id);
+            $this->db->update(db_prefix().'candidate_salary_breakup',$result);
+        }
+        //  Added Razorpay api for set salary
+        // $this->load->model("Razorpay_payroll","razorpay");
+        // $this->razorpay->set_salary($user_id);
+    }
+
+	function deduction_pf_details($candidate_id ='', $post_data = array())
+    {
+        $user_id = $candidate_id;
+        $check_status = $this->db->get_where(db_prefix().'candidate_salary_breakup',array('candidate_id'=>$candidate_id))->row_array();
+        
+        if(count($check_status) == 0 )
+        {
+            $array_temp_data = array();
+            $anual_basic_salary = array();
+
+            $i= 1;
+            foreach($post_data as $key => $post_data_val)
+            {
+                $payroll_addition = array();
+                $payroll_addition = array(
+                    "category_name"         => "deduction",
+                    "addtion_name"          => str_replace("_"," ", $key),
+                    "unit_amount"           => $post_data_val,
+                    "id"                    => $i
+                );
+
+                if($i == 1)
+                {
+                    array_push($anual_basic_salary,$post_data_val);
+                } 
+                array_push($array_temp_data, $payroll_addition);
+                $i++;
+            }
+            $result =array(
+                'pf_deduction'  	=>  json_encode($array_temp_data)
+            );
+            $result['candidate_id'] = $user_id;
+            $this->db->insert(db_prefix().'candidate_salary_breakup',$result);
+        }
+        else
+        {
+            $array_temp_data = array();
+            $anual_basic_salary = array();
+            $i= 1;
+            foreach($post_data as $key => $post_data_val)
+            {
+                $payroll_addition = array();
+                $payroll_addition = array(
+                    "category_name"         => "deduction",
+                    "addtion_name"          => str_replace("_"," ", $key),
+                    "unit_amount"           => $post_data_val,
+                    "id"                    => $i
+                );
+
+                if($i== 1)
+                {
+                    array_push($anual_basic_salary,$post_data_val);
+                } 
+                array_push($array_temp_data, $payroll_addition);
+                $i++;
+            }
+
+            $result =array(
+                'pf_deduction' 		=> json_encode($array_temp_data)
+            );
+            $this->db->where('candidate_id',$user_id);
+            $this->db->update(db_prefix().'candidate_salary_breakup',$result);
+        }
+    }
+
+	public function enable_by_type($type)
+    {
+        if (!has_permission('recruitment', '', 'edit') || is_admin()) {
+            $this->db->where('type', $type);
+			$this->db->update(db_prefix() . 'emailtemplates', ['active' => "1"]);
+        }
+        redirect(admin_url('emails'));
+    }
+	public function disable_by_type($type)
+    {
+        if (!has_permission('recruitment', '', 'edit') || is_admin()) {
+            $this->db->where('type', $type);
+			$this->db->update(db_prefix() . 'emailtemplates', ['active' => "0"]);
+        }
+        redirect(admin_url('emails'));
+    }
+
+    public function enable($id)
+    {
+		if (!has_permission('recruitment', '', 'edit') || is_admin()) {
+            $this->db->where('emailtemplateid', $id);
+			$template = $this->db->get(db_prefix() . 'emailtemplates')->row();
+			$type = $template->slug;
+			$this->db->where('emailtemplateid', $id);
+			$this->db->update(db_prefix() . 'emailtemplates', ['active' => "1"]);
+        }
+        redirect(admin_url('emails'));
+    }
+	public function disable($id)
+    {
+		if (!has_permission('recruitment', '', 'edit') || is_admin()) {
+            $this->db->where('emailtemplateid', $id);
+			$template = $this->db->get(db_prefix() . 'emailtemplates')->row();
+			$type = $template->slug;
+			$this->db->where('emailtemplateid', $id);
+			$this->db->update(db_prefix() . 'emailtemplates', ['active' => "0"]);
+        }
+        redirect(admin_url('emails'));
+    }
 
 }

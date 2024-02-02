@@ -697,6 +697,52 @@
                             </div>
                             <?php hooks()->do_action('after_email_templates'); ?>
                             <div class="clearfix"></div>
+                            <?php hooks()->do_action('before_offer_letter'); ?>
+                            <div class="col-md-12">
+                                <h4 class="bold email-template-heading">
+                                    <?php echo _l('offer_letter'); ?>
+                                    <?php if ($hasPermissionEdit) { ?>
+                                    <a href="<?php echo admin_url('recruitment/disable_by_type/offer_letter'); ?>" class="pull-right mleft5 mright25">
+                                        <small><?php echo _l('disable_all'); ?></small>
+                                    </a>
+                                    <a href="<?php echo admin_url('recruitment/enable_by_type/offer_letter'); ?>" class="pull-right">
+                                        <small><?php echo _l('enable_all'); ?></small>
+                                    </a>
+                                    <?php } ?>
+                                </h4>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <span class="tw-font-semibold">
+                                                        <?php echo _l('email_templates_table_heading_name'); ?>
+                                                    </span>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($offer_letter as $offer_letter_val) { ?>
+                                            <tr>
+                                                <td class="<?php if ($offer_letter_val['active'] == 0) { echo 'text-throught'; } ?>">
+                                                    <a href="<?php echo admin_url('emails/email_template/' . $offer_letter_val['emailtemplateid']); ?>"><?php echo $offer_letter_val['name']; ?></a>
+                                                    <?php if (ENVIRONMENT !== 'production') { ?>
+                                                    <br />
+                                                    <small><?php echo $offer_letter_val['slug']; ?></small>
+                                                    <?php } ?>
+                                                    <?php if ($hasPermissionEdit) { ?>
+                                                    <a href="<?php echo admin_url('recruitment/' . ($offer_letter_val['active'] == '1' ? 'disable/' : 'enable/') . $offer_letter_val['emailtemplateid']); ?>" class="pull-right">
+                                                        <small><?php echo _l($offer_letter_val['active'] == 1 ? 'disable' : 'enable'); ?></small>
+                                                    </a>
+                                                    <?php } ?>
+                                                </td>
+                                            </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
