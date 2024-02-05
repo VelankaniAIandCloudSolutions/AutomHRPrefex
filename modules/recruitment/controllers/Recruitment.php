@@ -1190,9 +1190,27 @@ class recruitment extends AdminController {
 	 * @return json
 	 */
 	public function change_status_candidate($status, $id) {
-		$change = $this->recruitment_model->change_status_candidate($status, $id);
-		if ($change == true) {
+		
 
+		$change = $this->recruitment_model->change_status_candidate($status, $id);
+		
+		if ($change == true) {
+			if($status == "6")
+			{
+				$candidate = $id; 
+				$this->load->model('departments_model');
+				$this->load->model('staff_model');
+				$cd = $this->recruitment_model->get_candidates($candidate);
+				$step_setting = $this->recruitment_model->get_step_transfer_setting();
+				$step = [];
+				foreach ($step_setting as $st) {
+					$step['id'] = $st['set_id'];
+					$step['subject'] = $st['subject'];
+					$step['content'] = $st['content'];
+					$step['email'] = $cd->email;
+					$this->recruitment_model->action_transfer_hr($step);
+				}
+			}
 			$message = _l('change_status_campaign') . ' ' . _l('successfully');
 			echo json_encode([
 				'result' => $message,
