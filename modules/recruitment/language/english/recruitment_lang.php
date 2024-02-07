@@ -355,3 +355,39 @@ $lang['yearly'] = 'Yearly';
 $lang['job_role'] = 'Job Position';
 $lang['annual_ctc'] = 'Annual CTC';
 $lang['monthly_breakup_ctc'] = 'Monthly Salary Breakup';
+
+$lang['notes'] = 'Notes';
+$lang['effective_date'] = 'Effective Date';
+
+// Start:    Merge Fields for Offer Letter
+$fields = array(
+    "offer_letter_date",
+    "candidate_name",
+    "candidate_address_1",
+    "candidate_address_2",
+    "candidate_city",
+    "candidate_state",
+    "candidate_pin_code",
+    "candidate_country",
+    "candidate_title",
+    "company_name",
+    "annual_ctc",
+    "monthly_breakup_ctc",
+    "reporting_manager_title",
+    "reporting_manager_name",
+    "shift_timing",
+    "joining_date",
+    "last_date_of_offer_acceptance",
+    "name_of_person_to_reporting_on_start_date",
+    "name_of_person_authorized_to_make_offer",
+    "name_of_person_authorized_position",
+    "company_logo"
+);
+
+foreach ($fields as $key => $val) {
+    // Assign field labels to corresponding keys in the $lang array
+    $lang[$val] = ucfirst(str_replace("_", " ", $val));
+}
+
+$lang['end_date'] = 'End Date';
+$lang['job_role_select'] = 'Job Position Select';

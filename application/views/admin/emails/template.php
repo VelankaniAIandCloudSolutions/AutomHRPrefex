@@ -118,7 +118,14 @@
                               $mergeLooped = [];
                               foreach ($available_merge_fields as $field) {
                                   foreach ($field as $key => $val) {
-                                      echo '<div class="col-md-6 merge_fields_col">';
+                                        if($key == 'offer_letter')
+                                        {
+                                            echo '<div class="col-md-12 merge_fields_col">';
+                                        }
+                                        else{
+                                            echo '<div class="col-md-6 merge_fields_col">';
+                                        }
+                                     
                                       echo '<h5 class="bold tw-text-base tw-rounded-lg tw-bg-neutral-50 tw-py-2 tw-px-3">' . ucwords(str_replace([ '-', '_'], ' ', $key)) . '</h5>';
                                       foreach ($val as $_field) {
                                           if (count($_field['available']) == 0

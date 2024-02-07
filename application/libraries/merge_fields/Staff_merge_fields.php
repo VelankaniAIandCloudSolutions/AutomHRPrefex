@@ -29,7 +29,7 @@ class Staff_merge_fields extends App_merge_fields
                         'contract-signed-to-staff',
                         'contract-comment-to-admin',
                         'non-billed-tasks-reminder',
-                        'offer_letter'
+                        
                     ],
                 ],
                 [
@@ -53,7 +53,7 @@ class Staff_merge_fields extends App_merge_fields
                         'contract-expiration-to-staff',
                         'contract-signed-to-staff',
                         'contract-comment-to-admin',
-                        'offer_letter'
+                        
                     ],
                 ],
                 [

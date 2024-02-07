@@ -1098,6 +1098,118 @@
 	</div>
 </div>
 
+
+<!--  Offer letter send modal  -->
+<div class="modal fade" id="offer_letter_modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<?php echo form_open_multipart(admin_url('recruitment/send_offer_letter'), array('id' => 'offer_letter-form')); ?>
+		<div class="modal-content width-100">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">
+					<span><?php echo _l('offer_letter'); ?></span>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					
+					<div class="col-md-12">
+						<?php echo render_input('offer_letter_date', 'offer_letter_date','', 'date'); ?>
+					</div>
+
+					<div class="col-md-12">
+						<?php 
+						$options = array(
+							array("name" => "Mr."),
+							array("name" => "Mrs."),
+							array("name" => "Ms"),
+							array("name" => "Miss")
+						);
+						$selected = $options[0]['name'];
+						echo render_select('candidate_title', $options, ["name","name"], 'candidate_title', $selected);
+						?>
+					</div>
+
+					<div class="col-md-12">
+						<?php $attr = [];
+						$attr = ['disabled' => "true"];
+						echo render_input('candidate', 'candidate', $candidate->candidate_code . ' - ' . $candidate->candidate_name . ' ' . $candidate->last_name, 'text', $attr);
+
+						echo form_hidden('candidate', $candidate->id);
+						?>
+					</div>
+					<div class="col-md-12">
+						<?php echo render_input('effective_date', 'effective_date','', 'date'); ?>
+					</div>
+
+					<div class="col-md-12">
+						<?php echo render_input('end_date', 'end_date','', 'date'); ?>
+					</div>
+
+					<div class="col-md-12">
+						<?php 
+						$selected = '';
+						echo render_select('job_role', $job_role_list, ["position_name","position_name"], 'job_role', $selected);
+						?>
+					</div>
+
+					<div class="col-md-12">
+						<?php 
+						$options = array(
+							array("name" => "Mr."),
+							array("name" => "Mrs."),
+							array("name" => "Ms"),
+							array("name" => "Miss")
+						);
+						$selected = $options[0]['name'];
+						echo render_select('reporting_manager_title', $options, ["name","name"], 'reporting_manager_title', $selected);
+						?>
+					</div>
+					<div class="col-md-12">
+						<?php 
+						 	$selected ='';
+							echo render_select('reporting_manager_name', $staffs, ['staffid', ['firstname','middlename','lastname']], 'reporting_manager_name', $selected);
+						?>
+					</div>
+
+					<div class="col-md-12">
+						<?php 
+						 	$selected ='';
+							echo render_select('shift_timing', $data_shift_type, ['shift_type_name','shift_type_name'], 'shift_timing', $selected);
+						?>
+					</div>
+
+					<div class="col-md-12">
+						<?php echo render_textarea('notes', 'notes', '', array(), array(), '', 'tinymce') ?>
+					</div>
+
+					<div class="col-md-12">
+						<?php 
+						 	$selected ='';
+							echo render_select('name_of_person_to_reporting_on_start_date', $staffs, ['name_of_person_to_reporting_on_start_date', ['firstname','middlename','lastname']], 'name_of_person_to_reporting_on_start_date', $selected);
+						?>
+					</div>
+
+					<div class="col-md-12">
+						<?php 
+						 	$selected ='';
+							echo render_select('name_of_person_authorized_to_make_offer', $staffs, ['name_of_person_authorized_to_make_offer', ['firstname','middlename','lastname']], 'name_of_person_authorized_to_make_offer', $selected);
+						?>
+					</div>
+
+					<div id="type_care">
+
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="" class="btn btn-default" data-dismiss="modal"><?php echo _l('close'); ?></button>
+				<button id="sm_btn" type="submit" class="btn btn-info"><?php echo _l('submit'); ?></button>
+			</div>
+		</div><!-- /.modal-content -->
+		<?php echo form_close(); ?>
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <?php init_tail(); ?>
 <?php require 'modules/recruitment/assets/js/candidate_detail_js.php'; ?>
 </body>

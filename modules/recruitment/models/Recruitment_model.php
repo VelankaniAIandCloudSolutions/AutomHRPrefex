@@ -710,6 +710,7 @@ class Recruitment_model extends App_Model {
 
 			$this->db->where('rel_id', $id);
 			$this->db->where('rel_type', 'rec_cadidate_avar');
+			
 			$candidate->avar = $this->db->get(db_prefix() . 'files')->row();
 
 			$this->db->where('rel_id', $id);
@@ -3856,6 +3857,32 @@ class Recruitment_model extends App_Model {
 		} else {
 			return 1;
 		}
+	}
+
+	public function get_offer_email_template($where = array()) {
+		$this->db->select("*");
+		$this->db->from(db_prefix()."emailtemplates");
+		if(!empty($where))
+		{
+			$this->db->where($where);
+		}	
+
+		$this->db->where("type","offer_letter");
+
+		$this->db->order_by("emailtemplateid","desc");
+		$query = $this->db->get()->result_array();
+		return $query;
+	}
+
+	public function hr_job_position($id = '')
+	{
+		if($id != "")
+		{
+			$this->db->where("position_id", $id);
+		}
+
+		$result = $this->db->get(db_prefix()."hr_job_position")->result_array();
+		return $result;
 	}
 
 }

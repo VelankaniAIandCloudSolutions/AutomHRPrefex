@@ -159,10 +159,25 @@ function delete_candidate_attachment(id) {
 }
 function change_status_candidate(invoker,id){
 	"use strict";
-	$.post(admin_url+'recruitment/change_status_candidate/'+invoker.value+'/'+id).done(function(reponse){
-	    reponse = JSON.parse(reponse);
-	    window.location.href = admin_url + 'recruitment/candidate/'+id;
-	    alert_float('success',reponse.result);
-  	});
+
+	if(invoker.value == '5')
+	{
+		offer_letter_send_modal();
+	}
+	else{
+			$.post(admin_url+'recruitment/change_status_candidate/'+invoker.value+'/'+id).done(function(reponse){
+			reponse = JSON.parse(reponse);
+			window.location.href = admin_url + 'recruitment/candidate/'+id;
+			alert_float('success',reponse.result);
+		});
+	}
+}
+
+//  offer letter modal open
+function offer_letter_send_modal(){
+	"use strict";
+	$('#offer_letter_modal').modal('show');
+	appValidateForm($('#offer_letter-form'), {
+           content: 'required', subject:'required',email:'required'});
 }
 </script>

@@ -808,6 +808,15 @@ class recruitment extends AdminController {
 
 		}
 
+		$job_role_list = $this->recruitment_model->hr_job_position();
+		$data['job_role_list'] = $job_role_list;
+		
+		$this->load->model('departments_model');
+		$this->load->model('timesheets/timesheets_model', "timesheets_model");
+		$data['departments'] = $this->departments_model->get();
+		$data['staffs'] = $this->staff_model->get();
+		$data_shift_type = $this->timesheets_model->get_shift_type();
+		$data['data_shift_type'] = $data_shift_type;
 		$this->load->view('candidate_profile/candidate_detail', $data);
 	}
 
@@ -2797,4 +2806,45 @@ class recruitment extends AdminController {
         redirect(admin_url('emails'));
     }
 
+	public function send_offer_letter()
+	{
+		$post = $this->input->post();
+		if(!empty($post))
+		{
+			$offer_letter_date = $post['offer_letter_date'];
+			$candidate_title = $post['candidate_title'];
+			$candidate = $post['candidate']; // candidate id
+			$effective_date = $post['effective_date'];
+			$end_date = $post['end_date'];
+			$job_role = $post['job_role'];
+			$reporting_manager_title = $post['reporting_manager_title'];
+			$reporting_manager_id = $post['reporting_manager_name']; // reproting manager id
+			$shift_timing = $post['shift_timing'];
+			$notes = $post['notes'];
+			$name_of_person_to_reporting_on_start_date_emp_id = $post['name_of_person_to_reporting_on_start_date']; // employee id for first day to meet.
+			$name_of_person_authorized_to_make_offer_emp_id = $post['name_of_person_authorized_to_make_offer']; // employee id who is generating offer letter
+
+			$candidate_info = $reporting_manager_info = $first_day_reporting_employee_info =  $authorized_offer_letter_emp_info = array();
+			
+
+			$candidate_info = $this->recruitment_model->get_candidates($candidate);	
+
+			echo"<pre>";print_R($candidate_info); die;
+
+			$branch_id = $candidate_info->branch_id;
+
+			$reporting_manager_info = $this->staff_model->get($reporting_manager_id);
+			$first_day_reporting_employee_info = $this->staff_model->get($name_of_person_to_reporting_on_start_date_emp_id);
+			$authorized_offer_letter_emp_info = $this->staff_model->get($name_of_person_authorized_to_make_offer_emp_id);
+			$salary_breakup_detaisl = $this->db->get_where(db_prefix()."candidate_salary_breakup", array("candidate_id" => $candidate , "branch_id" => $branch_id))->row_array();
+			
+			$this->db->limit(1);
+			$this->db->order_by("id","desc");
+			$candidate_offer_letter_details = $this->db->get_where(db_prefix()."candidate_offer_letter", array("candidate_id" => $candidate , "branch_id" => $branch_id))->row_array();
+			
+			$default_language = load_admin_language();
+			$offer_letter_template = $this->db->get_where(db_prefix()."emailtemplates", array("slug" =>'offer_letter', "language" => $default_language, "branch_id" => $branch_id))->row_array();
+			
+		}
+	}
 }
