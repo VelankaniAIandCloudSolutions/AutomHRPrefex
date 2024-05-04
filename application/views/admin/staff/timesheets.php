@@ -1,3 +1,17 @@
+<style>
+    .spanTextButton
+        {
+            text-decoration: none;
+            padding: 2px 6px 2px 6px;
+            border-top: 1px solid #CCCCCC;
+            border-right: 1px solid #333333;
+            border-bottom: 1px solid #333333;
+            border-left: 1px solid #CCCCCC;
+            border-radius: 8px;
+        }
+
+</style>
+
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <?php init_head(); ?>
 <div id="wrapper">
@@ -5,6 +19,88 @@
         <?php if (!isset($view_all)) { ?>
         <?php $this->load->view('admin/staff/stats'); ?>
         <?php } ?>
+
+         <!-- start - Time sheet approval  -->
+        <div class="row">
+            <div class='col-md-12'>
+                <label><?php echo _l('timesheet_send_to_reporting_manager');?></label>
+                <span id="timesheet_status" class='' ></span>
+            </div>
+            <div class='col-md-12'>
+                <div class="panel_s">
+                    <div class="panel-body">
+                        <div class="col-md-3">
+                        <label><?php echo _l('reporting_to');?></label>
+                            <select name="reporting_manager_id" data-live-search="true" data-width="100%" id="reporting_manager_id" class="selectpicker" data-width="100%">
+                                <option value=''> <?php echo _l('reporting_to');?></option>
+                                <?php foreach ($reproting_to as $reproting_to_manager) {
+                                ?>
+                                <option value="<?php echo $reproting_to_manager['reporting_to_id']; ?>">
+                                <?php echo get_staff_full_name($reproting_to_manager['reporting_to_id']); ?>
+                                </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label><?php echo _l('timesheet_filling_format');?></label>
+                            <select name="timesheet_range" id="timesheet_range" class="selectpicker" disabled data-width="100%" onchange="timesheet_range();">
+                                <option value=''><?php echo _l('timesheet_filling_format');?></option>
+                                <option value="weekly" <?php if($timesheet_period === 'weekly'){echo"selected";}?> > <?php echo _l("1week");?> </option>
+                                <option value="biweekly" <?php if($timesheet_period === 'biweekly'){echo"selected";}?> > <?php echo _l("2week");?> </option>
+                                <option value="month" <?php if($timesheet_period === 'month'){echo"selected";}?> > <?php echo _l("1month");?> </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                        <label><?php echo _l('timesheet_start_date');?></label>
+                            <?php echo render_date_input('time_sheet_period_from'); ?>
+                        </div>
+                        <div class="col-md-3">
+                        <label><?php echo _l('timesheet_to_date');?></label>
+                            <?php echo render_date_input('time_sheet_period_to'); ?>
+                        </div>
+                        <hr />
+                        <div class="clearfix"></div>
+                        <div class="col-md-3">
+                        <label><?php echo _l('client');?></label>
+                            <select id="clientid" name="timesheet_clientid" data-live-search="true" data-width="100%"
+                                class="ajax-search" data-empty-title="<?php echo _l('client'); ?>"
+                                data-none-selected-text="<?php echo _l('client'); ?>">
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                        <label><?php echo _l('project');?></label>
+                            <select data-empty-title="<?php echo _l('project'); ?>" multiple="false"
+                                name="timesheet_project_id" id="project_id" class="projects ajax-search"
+                                data-live-search="true" data-width="100%">
+                            </select>
+                        </div>
+                        <?php if (isset($view_all)) { ?>
+                        <div class="col-md-3">
+                        <label><?php echo _l('all_staff_members');?></label>
+                            <select name="timesheet_staff_id" id="timesheet_staff_id" class="selectpicker" data-width="100%">
+                                <option value=""><?php echo _l('all_staff_members'); ?></option>
+                                <option value="<?php echo get_staff_user_id(); ?>">
+                                    <?php echo get_staff_full_name(get_staff_user_id()); ?></option>
+                                <?php foreach ($staff_members_with_timesheets as $staff) { ?>
+                                <option value="<?php echo $staff['staff_id']; ?>">
+                                    <?php echo get_staff_full_name($staff['staff_id']); ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <?php } ?>
+
+                        <div class="col-md-3" style='margin-top:20px;'>
+                            <a href="#" id="submit_for_approval"
+                                class="btn btn-primary pull-left" title="<?php echo _l('send_to_reporting_manager'); ?>"><?php echo _l('send_for_approval'); ?></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- end - Time sheet approval  -->
+
         <div class="row">
             <div class="col-md-12">
                 <div class="panel_s">
@@ -311,6 +407,135 @@ function do_timesheets_title() {
     $('head title').html(_temp + (staff_member_select.find('option:selected').text() != '' ? ' - ' + staff_member_select
         .find('option:selected').text() : ''));
 }
+
+
+$("#submit_for_approval").on("click", function(){
+    var range = $("#timesheet_range").val();
+    var period_from = $("#time_sheet_period_from").val();
+    var period_to = $("#time_sheet_period_to").val();
+    var project_id = $("#project_id").val();
+    var clientid = $("#clientid").val();
+    var reporting_manager_id = $("#reporting_manager_id").val();
+    var timesheet_staff_id = $("#timesheet_staff_id").val();
+
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('admin/staff/time_sheet_approval');?>",
+        data: {timesheet_staff_id:timesheet_staff_id, range:range, period_from:period_from, period_to:period_to, project_id:project_id, clientid:clientid, reporting_manager_id:reporting_manager_id},
+        success: function(response) {
+            // console.log(response);
+            location.reload();
+        }
+    });
+});
+
+
+$(document).ready(function(){
+
+    var frequency = $('#timesheet_range').val();
+    var timesheet_staff_id = $("#timesheet_staff_id").val();
+    var start_date = $("#time_sheet_period_from").val();
+
+    var period_to = $("#time_sheet_period_to").val();
+    //var project_id = $("#project_id").val();
+    var project_id = $('select[name="timesheet_project_id[]"]').val();
+    var clientid = $("#clientid").val();
+    var reporting_manager_id = $("#reporting_manager_id").val();
+
+    fequncy_date_calculate(frequency, timesheet_staff_id, start_date);
+});
+
+function fequncy_date_calculate(frequency, timesheet_staff_id, start_date)
+{
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('admin/staff/fequency_date_calculate');?>", 
+        data: {frequency:frequency,timesheet_staff_id:timesheet_staff_id,start_date:start_date},
+        success: function(response) {
+            var obj = JSON.parse(response);
+            $("#time_sheet_period_from").val(obj.start_date);
+            $("#time_sheet_period_to").val(obj.end_date);
+
+            timesheet_tracking_status(obj.start_date, obj.end_date);
+        }
+    });
+}
+
+$("#time_sheet_period_from").on('change', function(){
+    var frequency = $('#timesheet_range').val();
+    var timesheet_staff_id = $("#timesheet_staff_id").val();
+    var start_date = $("#time_sheet_period_from").val();
+    var period_to = $("#time_sheet_period_to").val();
+    var clientid = $("#clientid").val();
+    var reporting_manager_id = $("#reporting_manager_id").val();
+    var project_id = $('select[name="timesheet_project_id[]"]').val();
+    fequncy_date_calculate(frequency, timesheet_staff_id, start_date);
+});
+
+function timesheet_tracking_status(start_date, period_to)
+{
+    var frequency = $('#timesheet_range').val();
+    var timesheet_staff_id = $("#timesheet_staff_id").val();
+    var clientid = $("#clientid").val();
+    var reporting_manager_id = $("#reporting_manager_id").val();
+    //var project_id = $('select[name="timesheet_project_id[]"]').val();
+    var project_id = $("#project_id").val();
+
+    if(project_id == '')
+    {
+        project_id = 0;
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url('admin/staff/timesheet_tracking_status');?>", 
+        data:{frequency:frequency,timesheet_staff_id:timesheet_staff_id,start_date:start_date,period_to:period_to, project_id:project_id,clientid:clientid, reporting_manager_id:reporting_manager_id},
+        success: function(response) {
+            var obj = JSON.parse(response);
+            if(obj.status == 0)
+            {
+                $('#timesheet_status')
+                .removeClass() // Remove existing classes
+                .addClass('bg-warning spanTextButton') // Add the new class
+                .text('Timesheet Pending for Approval'); // Set the new text 
+
+                $("#submit_for_approval").hide();
+            }
+            else if(obj.status == 1)
+            {
+                $('#timesheet_status')
+                .removeClass() // Remove existing classes
+                .addClass('bg-success spanTextButton') // Add the new class
+                .text('Timesheet Approved by Manager'); // Set the new text 
+                $("#submit_for_approval").hide();
+            }
+            else if(obj.status == 3)
+            {
+                $('#timesheet_status')
+                .removeClass() // Remove existing classes
+                .addClass('bg-primary spanTextButton') // Add the new class
+                .text('Timesheet Not Submitted for Approval');
+                $("#submit_for_approval").hide();
+            }
+            else if(obj.status == 4)
+            {
+                $('#timesheet_status')
+                .removeClass() // Remove existing classes
+                .addClass('bg-warning spanTextButton') // Add the new class
+                .text('Timesheet Records Not Available.');
+            }
+            else{
+                $('#timesheet_status')
+                .removeClass() // Remove existing classes
+                .addClass('bg-danger spanTextButton') // Add the new class
+                .text('Timesheet Rejected by Manager'); // Set the new text 
+            }
+        }
+    });
+}
+
+
+
 </script>
 </body>
 

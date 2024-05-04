@@ -6,8 +6,6 @@ Module Name: Recruitment
 Description: Recruitment Management module
 Version: 1.1.6
 Requires at least: 2.3.*
-Author: GreenTech Solutions
-Author URI: https://codecanyon.net/user/greentech_solutions
 */
 
 define('RECRUITMENT_MODULE_NAME', 'recruitment');

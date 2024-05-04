@@ -1562,7 +1562,6 @@ class timesheets_model extends app_model {
 		$this->load->model('departments_model');
 		$staff = $this->staff_model->get($staff_id);
 		$departments = $this->departments_model->get_staff_departments($staff_id, true);
-
 		$where_job_position = '';
 		if ($staff) {
 			if ($staff->role != '' && $staff->role != 0) {

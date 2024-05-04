@@ -455,6 +455,10 @@
   function get_remain_day_off(){
     "use strict";
     var staff_id = $('select[name="staff_id"]').val();
+    if(staff_id === '' || staff_id === undefined) {
+    staff_id = $('input[name="staff_id"]').val();
+  }
+
     var type_of_leave = $('select[name="type_of_leave"]').val();
     $('#requisition-form .btn-submit').attr('disabled', true);
     $('input[name="userid"]').val(staff_id);

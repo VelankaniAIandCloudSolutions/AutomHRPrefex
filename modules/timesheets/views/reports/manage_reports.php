@@ -22,10 +22,10 @@
           <p><a href="#" class="font-medium" onclick="init_report(this,'check_in_out_progress_according_to_the_route'); return false;"><i class="fa fa-caret-down" aria-hidden="true"></i> <?php echo _l('check_in_out_progress_according_to_the_route'); ?></a></p>
           <hr class="hr-10" />                          
           <p><a href="#" class="font-medium" onclick="init_report(this,'check_in_out_progress'); return false;"><i class="fa fa-caret-down" aria-hidden="true"></i> <?php echo _l('check_in_out_progress'); ?></a></p>
-          <hr class="hr-10" />                          
-          <p><a href="#" class="font-medium" onclick="init_report(this,'check_in_out_hourly_progress'); return false;"><i class="fa fa-caret-down" aria-hidden="true"></i> <?php echo _l('check_in_out_hourly_progress'); ?></a></p>
-        
 
+           <hr class="hr-10" />                          
+          <p><a href="#" class="font-medium" onclick="init_report(this,'check_in_out_hourly_progress'); return false;"><i class="fa fa-caret-down" aria-hidden="true"></i> <?php echo _l('check_in_out_hourly_progress'); ?></a></p>
+          
         </div>
         <!-- End table report -->
         <!-- Chart report -->

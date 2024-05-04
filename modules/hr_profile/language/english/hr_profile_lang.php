@@ -478,8 +478,3 @@ $lang['hr_step']	 													 = 'Step';
 $lang['hr_not_staff_member_setting']	 								 = 'The setting for Not Staff Member';
 $lang['hr_not_staff_member_label']	 									 = 'Do not show left menu, Staff profile';
 $lang['hr_not_staff_member_tooltip']	 								 = 'If this employee is Not a staff Member and this setting is enabled, when the employee logs in, the left menu bar, Staff profile will not be visible.';
-
-
-
-
-

@@ -3883,10 +3883,24 @@ $lang['payment_attempt_fee']                                = 'Payment Fee';
 $lang['feature']                                            = 'Feature';
 $lang['capabilities']                                       = 'Capabilities';
 
-$lang['resume_parse']                                       = 'Parse Resume';
-$lang['file_upload']                                        = 'Please update file extention doc, docx, pdf';
-$lang['parse_resume_file_error']                            = "Please upload correct file.";
-$lang['no_data_found']                                      = "No data available.";
+
+$lang['break_in']											= "Break Start";
+$lang['break_in_at']										= "Break Start At";
+$lang['break_out']											= "Break End";
+$lang['break_out_at']										= "Break End At";
+$lang['break_in_out']										= "Break In/Out Time";
+
+
+
+$lang['attendance_files']                                   = 'Attendance Files';
+
+$lang['attendance_start_date']                              = 'Start Date';
+$lang['attendance_end_date']                                = 'End Date';
+
+$lang['project_activity_project_attendance_file_removed']   = 'Removed project attendance file';
+$lang['download_sample_attendance_file'] 					= 'Download Sample Attendance File';
+
+
 $lang['resume_downlaod']                                    = "Resume Download";
 $lang['reporting_to']                                       = 'Reporting To';
 $lang['send_to_reporting_manager']                          = 'Send for Approval to Reporting Manager';
@@ -3915,19 +3929,6 @@ $lang['all']                                                = 'All';
 $lang['sno']                                                = 'S.No.';
 $lang['timesheet_status']                                   = 'Timesheet Status';
 $lang['time_tracking']                                      = 'Task Tracking Time';
-$lang['rejecte']                                            = 'Rejecte';
-$lang['approve']                                            = 'Approve';
+$lang['rejecte']                                           = 'Rejecte';
+$lang['approve']                                           = 'Approve';
 
-$lang['break_in']											= "Break Start";
-$lang['break_in_at']										= "Break Start At";
-$lang['break_out']											= "Break End";
-$lang['break_out_at']										= "Break End At";
-$lang['break_in_out']										= "Break In/Out Time";
-
-$lang['attendance_files']                                   = 'Attendance Files';
-
-$lang['attendance_start_date']                              = 'Start Date';
-$lang['attendance_end_date']                                = 'End Date';
-
-$lang['project_activity_project_attendance_file_removed']   = 'Removed project attendance file';
-$lang['download_sample_attendance_file'] = 'Download Sample Attendance File';

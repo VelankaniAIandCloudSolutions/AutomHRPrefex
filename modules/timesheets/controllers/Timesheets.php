@@ -1148,6 +1148,10 @@ class timesheets extends AdminController {
 
 		foreach ($data['value'] as $key => $value) {
 			$value = explode(':', $value);
+			$exp_val1 = explode("|", $value[1]);
+			
+			$value[1] = $exp_val1[0];
+
 			if (isset($value[1]) && $value[1] > 0 || $value[0] == 'M' || $value[0] == 'HO' || $value[0] == 'B') {
 				switch ($value[0]) {
 				case 'AL':
@@ -1158,6 +1162,7 @@ class timesheets extends AdminController {
 					break;
 				case 'W':
 					$hours = round($value[1], 2);
+
 					$h = intval($hours);
 					$m = ($hours - $h) * 60;
 					$h_m = $h . ':' . ((strlen($m) == 1) ? $m . '0' : $m);
@@ -6960,7 +6965,7 @@ public function check_in_ts() {
 				$list_fillter = [];
 				$col_header .= '<th>' . _l('staff') . '</th>';
 				$col_footer .= '<td></td>';
-				
+
 				$col_header .= '<th>' ._l("total_working_hours"). '</th>';
 				$col_footer .= '<td></td>';
 				$list_fillter[0] = 1;
@@ -6977,7 +6982,7 @@ public function check_in_ts() {
 	}
 
 	public function check_in_out_progress_hourly_report() {
-	
+
 		if ($this->input->is_ajax_request()) {
 			if ($this->input->post()) {
 				$month = $this->input->post('months_2_report');
@@ -6994,12 +6999,12 @@ public function check_in_ts() {
 
 				$columns[] = _l("total_working_hours");
 				$columns[] = _l("total_break_hours");
-				
+
 				$this->db->select("staff.staffid as staffid");
 				$this->db->from(db_prefix()."staff as staff");
 				$this->db->join(db_prefix()."hr_job_position as position","position.position_id = staff.job_position","left");
 				$this->db->join(db_prefix()."departments as department","department.departmentid = position.department_id","left");
-				
+
 				if(!empty($role_fillter))
 				{
 					$this->db->where_in("staff.role", implode(",", $role_fillter));
@@ -7009,6 +7014,7 @@ public function check_in_ts() {
 				{
 					$this->db->where_in("department.departmentid", implode(",", $department_fillter));
 				}
+
 				if(!empty($staff_fillter) && is_admin())
 				{
 					$this->db->where_in("staff.staffid", implode(",", $staff_fillter));
@@ -7019,7 +7025,6 @@ public function check_in_ts() {
 				else{
 					
 				}
-
 
 				if(isset($_POST['search']['value']) && $_POST['search']['value'] != "")
 				{
@@ -7036,7 +7041,7 @@ public function check_in_ts() {
 				$totalCountQuery = $this->db->query("SELECT FOUND_ROWS() AS total_rows");
 				$totalCount = $totalCountQuery->row()->total_rows;
 
-				
+
 				$final_data = array();
 				$output = array();
 				if(!empty($result))
@@ -7073,10 +7078,10 @@ public function check_in_ts() {
 									// Convert date strings to DateTime objects
 									$date1 = new DateTime($break_out_array[$id]);
 									$date2 = new DateTime($break_in_array[$id]);
-						
+
 									// Calculate the time difference
 									$difference = $date2->diff($date1);
-						
+
 									// Convert the difference to minutes and add to total
 									$total_break_time += $difference->h * 60 + $difference->i;
 								}
@@ -7115,10 +7120,10 @@ public function check_in_ts() {
 									// Convert date strings to DateTime objects
 									$date1 = new DateTime($work_time_out_array[$id]);
 									$date2 = new DateTime($work_time_in_array[$id]);
-						
+
 									// Calculate the time difference
 									$difference = $date2->diff($date1);
-						
+
 									// Convert the difference to minutes and add to total
 									$total_work_time += $difference->h * 60 + $difference->i;
 								}
@@ -7139,7 +7144,7 @@ public function check_in_ts() {
 				$output['draw']= $this->input->post("draw");
 				$output['recordsTotal']= $totalCount;
 				$output['recordsFiltered']= count($final_data);
-				
+
 				echo json_encode($output);
 				die();
 			}

@@ -575,4 +575,14 @@ function app_init_admin_sidebar_menu_items()
         'position' => 10,
         'badge'    => [],
     ]);
+
+     if (has_permission('reports', '', 'timesheet_approval_list')) {
+        $CI->app_menu->add_sidebar_children_item('reports', [
+            'slug'     => 'timesheet-list',
+            'name'     => _l('timesheet_approval_list'),
+            'href'     => admin_url('reports/timesheet_approval_list'),
+            'position' => 6,
+            'badge'    => [],
+        ]);
+    }
 }

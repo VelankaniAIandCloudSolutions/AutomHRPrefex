@@ -5650,8 +5650,14 @@ class Hr_profile extends AdminController {
 				if ($id) {
 					hr_profile_handle_staff_profile_image_upload($id);
 					set_alert('success', _l('added_successfully', _l('staff_member')));
-					redirect(admin_url('hr_profile/member/' . $id));
+
+					//  Razorpay API integration for Create Employee in Razorpay
+
+		        	// $this->load->model("Razorpay_payroll","razorpay_payroll");
+		        	// $this->razorpay_payroll->add_employee($id); // $id is employee id
+					// redirect(admin_url('hr_profile/member/' . $id));
 				}
+
 			} else {
 				if (!has_permission('hrm_hr_records', '', 'edit') && get_staff_user_id() != $id) {
 					access_denied('staff');
@@ -5673,6 +5679,26 @@ class Hr_profile extends AdminController {
 				} elseif ($response == true) {
 					set_alert('success', _l('updated_successfully', _l('staff_member')));
 				}
+
+				//  Razorpay API integration for Update Employee in Razorpay
+
+		        $this->load->model("Razorpay_payroll","razorpay_payroll");
+
+		        // check employee exist on razorpay
+		        
+		        $exist_check = 0;
+
+		        $exist_check = $this->razorpay_payroll->check_employee_exits($id); 
+
+		        // if check exist value return 1 it means employee profile already available in razorpay else create a new profile.
+		        
+		        // if($exist_check == "1") 
+		        // { 
+		        // 	$this->razorpay_payroll->update_employee($id, 'update'); // $id is employee id 
+		        // }
+		        // else{
+		        // 	$this->razorpay_payroll->add_employee($id); // $id is employee id
+		        // }
 
 				if ($manage_staff) {
 					redirect(admin_url('hr_profile/staff_infor'));
